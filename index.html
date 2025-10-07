@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tiny Pint — Big Beer, Small Space</title>
+  <meta name="description" content="Spokane’s smallest pub. Tiny Pints (10–12 oz), fresh taps, cozy 10-seat room. Big beer, small space." />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="stylesheet" href="output.css" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="navbar sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto p-3 md:p-4 flex items-center justify-between">
+      <a href="#" class="text-xl md:text-2xl font-extrabold">Tiny Pint</a>
+
+      <!-- Hamburger -->
+      <button id="menuBtn" class="rounded-lg px-3 py-2 border border-pint-stone md:hidden" aria-expanded="false" aria-controls="primaryNav">
+        ☰
+      </button>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:block">
+        <ul class="flex items-center gap-5">
+          <li><a class="navlink" href="#taps">What’s Pouring</a></li>
+          <li><a class="navlink" href="#about">About</a></li>
+          <li><a class="navlink" href="#menu">Menu</a></li>
+          <li><a class="navlink" href="#club">Pint Club</a></li>
+          <li><a class="navlink" href="#plans">Plans</a></li>
+          <li><a class="navlink" href="#location">Location</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <nav id="primaryNav" class="hidden md:hidden mt-3" aria-label="Mobile">
+      <ul class="flex flex-col gap-2">
+        <li><a class="navlink block px-2 py-2" href="#taps">What’s Pouring</a></li>
+        <li><a class="navlink block px-2 py-2" href="#about">About</a></li>
+        <li><a class="navlink block px-2 py-2" href="#menu">Menu</a></li>
+        <li><a class="navlink block px-2 py-2" href="#club">Pint Club</a></li>
+        <li><a class="navlink block px-2 py-2" href="#plans">Plans & Press</a></li>
+        <li><a class="navlink block px-2 py-2" href="#location">Location</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="text-center py-12 md:py-20 px-4">
+    <h1 class="text-4xl md:text-6xl font-extrabold mb-3 md:mb-4">Spokane’s Smallest Pub</h1>
+    <p class="max-w-xl mx-auto text-base md:text-lg text-gray-600 mb-6 md:mb-8">
+      A 10-seat taproom pouring 10–12 oz beers that stay cold, taste right, and turn over fast.
+    </p>
+    <div class="flex justify-center gap-3 md:gap-4">
+      <a href="#taps" class="btn btn-primary">What’s Pouring</a>
+      <a href="#plans" class="btn btn-outline">See Our Plan</a>
+    </div>
+  </section>
+
+  <!-- WHAT’S POURING -->
+  <section id="taps" class="section py-14 md:py-20 bg-white">
+    <div class="max-w-5xl mx-auto px-4 md:px-6">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+        <h2 class="text-2xl md:text-3xl font-extrabold">What’s Pouring</h2>
+        <p id="taps-updated" class="text-sm text-gray-600">Last updated —</p>
+      </div>
+
+      <div id="taps-list" class="tap-grid mt-6"></div>
+
+      <div id="taps-empty" class="hidden mt-6 text-sm text-gray-600">
+        Tap list coming soon. We rotate often—check back!
+      </div>
+
+      <p class="mt-6 text-xs md:text-sm text-gray-600">
+        Why tiny pours? A ½ bbl keg (~1,984 oz) yields ~198 Tiny Pints (10 oz) vs ~124 full pints (16 oz).
+        That’s more variety for you, fresher beer for everyone.
+      </p>
+    </div>
+  </section>
+
+  <!-- TINY MATH -->
+  <section id="math" class="section py-14 md:py-20">
+    <div class="max-w-5xl mx-auto px-4 md:px-6">
+      <h2 class="text-2xl md:text-3xl font-extrabold">Tiny Math</h2>
+      <p class="text-base md:text-lg text-gray-600 mt-2">
+        Same keg, more happy glasses. Tiny Pints keep beer colder, rotate faster, and reduce waste.
+      </p>
+
+      <!-- KPI Cards -->
+      <div class="grid gap-3 md:gap-4 md:grid-cols-3 mt-6">
+        <div class="card">
+          <div class="text-3xl font-extrabold"><span id="kegOz">1,984</span><span class="text-base font-bold"> oz</span></div>
+          <div class="text-gray-600 mt-1">½-barrel keg (15.5 gal)</div>
+        </div>
+        <div class="card">
+          <div class="text-3xl font-extrabold"><span id="tinyCount">198</span></div>
+          <div class="text-gray-600 mt-1">Tiny Pints (10–12 oz)</div>
+        </div>
+        <div class="card">
+          <div class="text-3xl font-extrabold"><span id="fullCount">124</span></div>
+          <div class="text-gray-600 mt-1">Full Pints (16 oz)</div>
+        </div>
+      </div>
+
+      <!-- Visual compare -->
+      <div class="card mt-4" aria-labelledby="vizTitle">
+        <div id="vizTitle" class="text-xl font-bold">More pours per keg</div>
+        <p class="text-sm text-gray-600 mt-1">Illustrative comparison using your current pour sizes.</p>
+
+        <div class="mt-4 space-y-3">
+          <div class="text-sm flex items-center justify-between">
+            <span class="font-semibold">Tiny Pint</span>
+            <span id="tinyCountLabel" class="text-gray-600">198 pours</span>
+          </div>
+          <div class="w-full rounded-xl border border-pint-stone overflow-hidden">
+            <div id="tinyBar" class="tiny-bar w-0"></div>
+          </div>
+
+          <div class="text-sm flex items-center justify-between mt-4">
+            <span class="font-semibold">Full Pint</span>
+            <span id="fullCountLabel" class="text-gray-600">124 pours</span>
+          </div>
+          <div class="w-full rounded-xl border border-pint-stone overflow-hidden">
+            <div id="fullBar" class="full-bar w-0"></div>
+          </div>
+        </div>
+
+        <!-- Tiny revenue math -->
+        <div class="grid gap-3 md:grid-cols-3 mt-6 text-sm">
+          <div class="rounded-xl border border-pint-stone p-4">
+            <div class="font-semibold">Assumptions</div>
+            <ul class="mt-2 text-gray-600 list-stone">
+              <li>Keg: <span id="assumeKeg">½-bbl (1,984 oz)</span></li>
+              <li>Tiny pour: <span id="assumeTiny">10 oz @ $5</span></li>
+              <li>Full pour: <span id="assumeFull">16 oz @ $6.50</span></li>
+            </ul>
+          </div>
+          <div class="rounded-xl border border-pint-stone p-4">
+            <div class="font-semibold">Gross per keg</div>
+            <p class="mt-2"><span class="font-bold">Tiny:</span> <span id="tinyGross">$990</span></p>
+            <p class="mt-1"><span class="font-bold">Full:</span> <span id="fullGross">$806</span></p>
+          </div>
+          <div class="rounded-xl border border-pint-stone p-4">
+            <div class="font-semibold">Why it matters</div>
+            <ul class="mt-2 list-stone">
+              <li>~<span id="morePct">60%</span> more pours</li>
+              <li>Fresher kegs, faster rotation</li>
+              <li>Guests can try more styles</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="text-xs text-gray-600 mt-4">
+          Notes: Gross ≠ profit. COGS, tax, and tips not included.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- (remaining sections unchanged: About, Menu, Club, Plans, Location, Footer) -->
+</body>
+</html>

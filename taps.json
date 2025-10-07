@@ -1,0 +1,32 @@
+{
+  "lastUpdated": "2025-10-07T12:00:00-07:00",
+  "taps": [
+    {
+      "name": "River City Pils",
+      "brewery": "River City Brewing",
+      "style": "Pilsner",
+      "abv": 5.0,
+      "sizes": { "tiny": 10, "full": 16 },
+      "price": { "tiny": 5, "full": 6.5 },
+      "status": "on"
+    },
+    {
+      "name": "Palouse Haze",
+      "brewery": "No-Li Brewhouse",
+      "style": "Hazy IPA",
+      "abv": 6.6,
+      "sizes": { "tiny": 10, "full": 16 },
+      "price": { "tiny": 5, "full": 6.5 },
+      "status": "on"
+    },
+    {
+      "name": "Basalt Porter",
+      "brewery": "Tiny Pint Collab",
+      "style": "Porter",
+      "abv": 5.8,
+      "sizes": { "tiny": 10, "full": 16 },
+      "price": { "tiny": 5, "full": 6.0 },
+      "status": "86d"
+    }
+  ]
+}
