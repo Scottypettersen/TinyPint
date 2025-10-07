@@ -1,168 +1,573 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Base -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <title>Tiny Pint — Big Beer, Small Space</title>
   <meta name="description" content="Spokane’s smallest pub. Tiny Pints (10–12 oz), fresh taps, cozy 10-seat room. Big beer, small space." />
+  <link rel="canonical" href="https://tinypint.beer/" />
+
+  <!-- Icons -->
   <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <!-- Theme color -->
+  <meta name="theme-color" content="#FAF9F6" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)">
+
+  <!-- Styles (Tailwind v4 compiled to output.css + custom theme tokens) -->
   <link rel="stylesheet" href="output.css" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+
+  <!-- Social -->
+  <meta property="og:title" content="Tiny Pint — Big Beer, Small Space" />
+  <meta property="og:description" content="10–12 oz pours, fresh rotation, cozy vibe. Spokane’s smallest pub." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/og-image.jpg" />
+  <meta property="og:url" content="https://tinypint.beer/" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- JSON-LD: Local Business (BarOrPub) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BarOrPub",
+    "name": "Tiny Pint",
+    "url": "https://tinypint.beer/",
+    "logo": "https://tinypint.beer/og-image.jpg",
+    "address": { "@type": "PostalAddress", "addressLocality": "Spokane", "addressRegion": "WA", "addressCountry": "US" },
+    "servesCuisine": "Beer",
+    "slogan": "Big Beer, Small Space",
+    "priceRange": "$",
+    "sameAs": []
+  }
+  </script>
+
+  <style>
+    /* Focus ring for keyboard users */
+    :focus-visible { outline: 2px solid var(--color-pint-forest); outline-offset: 2px; }
+    /* Smooth anchor scrolling */
+    html { scroll-behavior: smooth; }
+  </style>
 </head>
 
-<body>
+<body class="bg-pint-paper text-pint-ink font-sans">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-white focus:px-3 focus:py-2 focus:rounded-lg">Skip to content</a>
+
   <!-- Header -->
-  <header class="navbar sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto p-3 md:p-4 flex items-center justify-between">
-      <a href="#" class="text-xl md:text-2xl font-extrabold">Tiny Pint</a>
+  <header class="navbar sticky top-0 z-50" role="banner">
+    <div class="max-w-6xl mx-auto p-3 md:p-4">
+      <div class="flex items-center justify-between gap-3">
+        <a href="#" class="text-xl md:text-2xl font-extrabold" aria-label="Tiny Pint home">Tiny Pint</a>
 
-      <!-- Hamburger -->
-      <button id="menuBtn" class="rounded-lg px-3 py-2 border border-pint-stone md:hidden" aria-expanded="false" aria-controls="primaryNav">
-        ☰
-      </button>
+        <!-- Hamburger -->
+        <button id="menuBtn" class="rounded-lg px-3 py-2 border border-pint-stone md:hidden" aria-expanded="false" aria-controls="primaryNav" aria-label="Toggle menu">
+          ☰
+        </button>
 
-      <!-- Desktop Nav -->
-      <nav class="hidden md:block">
-        <ul class="flex items-center gap-5">
-          <li><a class="navlink" href="#taps">What’s Pouring</a></li>
-          <li><a class="navlink" href="#about">About</a></li>
-          <li><a class="navlink" href="#menu">Menu</a></li>
-          <li><a class="navlink" href="#club">Pint Club</a></li>
-          <li><a class="navlink" href="#plans">Plans</a></li>
-          <li><a class="navlink" href="#location">Location</a></li>
+        <!-- Desktop Nav -->
+        <nav class="hidden md:block" aria-label="Primary">
+          <ul class="flex items-center gap-5">
+            <li><a class="navlink" href="#taps">What’s Pouring</a></li>
+            <li><a class="navlink" href="#about">About</a></li>
+            <li><a class="navlink" href="#menu">Menu</a></li>
+            <li><a class="navlink" href="#club">Pint Club</a></li>
+            <li><a class="navlink" href="#plans">Plans</a></li>
+            <li><a class="navlink" href="#location">Location</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Mobile Drawer -->
+      <nav id="primaryNav" class="hidden md:hidden mt-3" aria-label="Mobile">
+        <ul class="flex flex-col gap-2">
+          <li><a class="navlink block px-2 py-2" href="#taps">What’s Pouring</a></li>
+          <li><a class="navlink block px-2 py-2" href="#about">About</a></li>
+          <li><a class="navlink block px-2 py-2" href="#menu">Menu</a></li>
+          <li><a class="navlink block px-2 py-2" href="#club">Pint Club</a></li>
+          <li><a class="navlink block px-2 py-2" href="#plans">Plans & Press</a></li>
+          <li><a class="navlink block px-2 py-2" href="#location">Location</a></li>
         </ul>
       </nav>
     </div>
-
-    <!-- Mobile Drawer -->
-    <nav id="primaryNav" class="hidden md:hidden mt-3" aria-label="Mobile">
-      <ul class="flex flex-col gap-2">
-        <li><a class="navlink block px-2 py-2" href="#taps">What’s Pouring</a></li>
-        <li><a class="navlink block px-2 py-2" href="#about">About</a></li>
-        <li><a class="navlink block px-2 py-2" href="#menu">Menu</a></li>
-        <li><a class="navlink block px-2 py-2" href="#club">Pint Club</a></li>
-        <li><a class="navlink block px-2 py-2" href="#plans">Plans & Press</a></li>
-        <li><a class="navlink block px-2 py-2" href="#location">Location</a></li>
-      </ul>
-    </nav>
   </header>
 
-  <!-- Hero -->
-  <section class="text-center py-12 md:py-20 px-4">
-    <h1 class="text-4xl md:text-6xl font-extrabold mb-3 md:mb-4">Spokane’s Smallest Pub</h1>
-    <p class="max-w-xl mx-auto text-base md:text-lg text-gray-600 mb-6 md:mb-8">
-      A 10-seat taproom pouring 10–12 oz beers that stay cold, taste right, and turn over fast.
-    </p>
-    <div class="flex justify-center gap-3 md:gap-4">
-      <a href="#taps" class="btn btn-primary">What’s Pouring</a>
-      <a href="#plans" class="btn btn-outline">See Our Plan</a>
-    </div>
-  </section>
-
-  <!-- WHAT’S POURING -->
-  <section id="taps" class="section py-14 md:py-20 bg-white">
-    <div class="max-w-5xl mx-auto px-4 md:px-6">
-      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
-        <h2 class="text-2xl md:text-3xl font-extrabold">What’s Pouring</h2>
-        <p id="taps-updated" class="text-sm text-gray-600">Last updated —</p>
-      </div>
-
-      <div id="taps-list" class="tap-grid mt-6"></div>
-
-      <div id="taps-empty" class="hidden mt-6 text-sm text-gray-600">
-        Tap list coming soon. We rotate often—check back!
-      </div>
-
-      <p class="mt-6 text-xs md:text-sm text-gray-600">
-        Why tiny pours? A ½ bbl keg (~1,984 oz) yields ~198 Tiny Pints (10 oz) vs ~124 full pints (16 oz).
-        That’s more variety for you, fresher beer for everyone.
+  <main id="main">
+    <!-- Hero -->
+    <section class="text-center py-12 md:py-20 px-4">
+      <h1 class="text-4xl md:text-6xl font-extrabold mb-3 md:mb-4">Spokane’s Smallest Pub</h1>
+      <p class="max-w-xl mx-auto text-base md:text-lg text-gray-600 mb-6 md:mb-8">
+        A 10-seat taproom pouring 10–12 oz beers that stay cold, taste right, and turn over fast.
       </p>
-    </div>
-  </section>
+      <div class="flex justify-center gap-3 md:gap-4">
+        <a href="#taps" class="btn btn-primary">What’s Pouring</a>
+        <a href="#plans" class="btn btn-outline">See Our Plan</a>
+      </div>
+    </section>
 
-  <!-- TINY MATH -->
-  <section id="math" class="section py-14 md:py-20">
-    <div class="max-w-5xl mx-auto px-4 md:px-6">
-      <h2 class="text-2xl md:text-3xl font-extrabold">Tiny Math</h2>
-      <p class="text-base md:text-lg text-gray-600 mt-2">
-        Same keg, more happy glasses. Tiny Pints keep beer colder, rotate faster, and reduce waste.
-      </p>
+    <!-- WHAT’S POURING -->
+    <section id="taps" class="section py-14 md:py-20 bg-white">
+      <div class="max-w-6xl mx-auto px-4 md:px-6">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+          <h2 class="text-2xl md:text-3xl font-extrabold">What’s Pouring</h2>
+          <p id="taps-updated" class="text-sm text-gray-600" aria-live="polite">Last updated —</p>
+        </div>
 
-      <!-- KPI Cards -->
-      <div class="grid gap-3 md:gap-4 md:grid-cols-3 mt-6">
-        <div class="card">
-          <div class="text-3xl font-extrabold"><span id="kegOz">1,984</span><span class="text-base font-bold"> oz</span></div>
-          <div class="text-gray-600 mt-1">½-barrel keg (15.5 gal)</div>
-        </div>
-        <div class="card">
-          <div class="text-3xl font-extrabold"><span id="tinyCount">198</span></div>
-          <div class="text-gray-600 mt-1">Tiny Pints (10–12 oz)</div>
-        </div>
-        <div class="card">
-          <div class="text-3xl font-extrabold"><span id="fullCount">124</span></div>
-          <div class="text-gray-600 mt-1">Full Pints (16 oz)</div>
+        <div class="grid gap-6 md:grid-cols-[1fr_380px] mt-6">
+          <!-- Tap list -->
+          <div>
+            <div id="taps-list" class="tap-grid"></div>
+
+            <div id="taps-empty" class="hidden mt-6 text-sm text-gray-600">
+              Tap list coming soon. We rotate often—check back!
+            </div>
+
+            <p class="mt-6 text-xs md:text-sm text-gray-600">
+              Why tiny pours? A ½ bbl keg (~1,984 oz) yields ~198 Tiny Pints (10 oz) vs ~124 full pints (16 oz).
+              That’s more variety for you, fresher beer for everyone.
+            </p>
+          </div>
+
+          <!-- Visual panel -->
+          <aside class="card md:sticky md:top-20" aria-label="On tap visuals">
+            <img src="/images/tap-handle.jpg" width="760" height="420" loading="lazy" decoding="async" alt="Tiny Pint tap handle" class="rounded-xl w-full h-56 object-cover">
+            <div class="mt-3">
+              <div class="text-sm text-gray-600">On tap now</div>
+              <div class="flex items-center gap-2 mt-2">
+                <span class="inline-block h-2.5 w-2.5 rounded-full" style="background:#EAC54F" aria-hidden="true"></span>
+                <span class="text-sm">Rainier Lager</span>
+              </div>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="inline-block h-2.5 w-2.5 rounded-full" style="background:#F59E0B" aria-hidden="true"></span>
+                <span class="text-sm">No-Li Born &amp; Raised IPA</span>
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
+    </section>
 
-      <!-- Visual compare -->
-      <div class="card mt-4" aria-labelledby="vizTitle">
-        <div id="vizTitle" class="text-xl font-bold">More pours per keg</div>
-        <p class="text-sm text-gray-600 mt-1">Illustrative comparison using your current pour sizes.</p>
+    <!-- TINY MATH -->
+    <section id="math" class="section py-14 md:py-20">
+      <div class="max-w-5xl mx-auto px-4 md:px-6">
+        <h2 class="text-2xl md:text-3xl font-extrabold">Tiny Math</h2>
+        <p class="text-base md:text-lg text-gray-600 mt-2">
+          Same keg, more happy glasses. Tiny Pints keep beer colder, rotate faster, and reduce waste.
+        </p>
 
-        <div class="mt-4 space-y-3">
-          <div class="text-sm flex items-center justify-between">
-            <span class="font-semibold">Tiny Pint</span>
-            <span id="tinyCountLabel" class="text-gray-600">198 pours</span>
+        <!-- KPI Cards -->
+        <div class="grid gap-3 md:gap-4 md:grid-cols-3 mt-6">
+          <div class="card" aria-live="polite">
+            <div class="text-3xl font-extrabold"><span id="kegOz">1,984</span><span class="text-base font-bold"> oz</span></div>
+            <div class="text-gray-600 mt-1">½-barrel keg (15.5 gal)</div>
           </div>
-          <div class="w-full rounded-xl border border-pint-stone overflow-hidden">
-            <div id="tinyBar" class="tiny-bar w-0"></div>
+          <div class="card" aria-live="polite">
+            <div class="text-3xl font-extrabold"><span id="tinyCount">198</span></div>
+            <div class="text-gray-600 mt-1">Tiny Pints (10–12 oz)</div>
           </div>
-
-          <div class="text-sm flex items-center justify-between mt-4">
-            <span class="font-semibold">Full Pint</span>
-            <span id="fullCountLabel" class="text-gray-600">124 pours</span>
-          </div>
-          <div class="w-full rounded-xl border border-pint-stone overflow-hidden">
-            <div id="fullBar" class="full-bar w-0"></div>
+          <div class="card" aria-live="polite">
+            <div class="text-3xl font-extrabold"><span id="fullCount">124</span></div>
+            <div class="text-gray-600 mt-1">Full Pints (16 oz)</div>
           </div>
         </div>
 
-        <!-- Tiny revenue math -->
-        <div class="grid gap-3 md:grid-cols-3 mt-6 text-sm">
-          <div class="rounded-xl border border-pint-stone p-4">
-            <div class="font-semibold">Assumptions</div>
-            <ul class="mt-2 text-gray-600 list-stone">
-              <li>Keg: <span id="assumeKeg">½-bbl (1,984 oz)</span></li>
-              <li>Tiny pour: <span id="assumeTiny">10 oz @ $5</span></li>
-              <li>Full pour: <span id="assumeFull">16 oz @ $6.50</span></li>
-            </ul>
+        <!-- Visual compare -->
+        <div class="card mt-4" aria-labelledby="vizTitle">
+          <div id="vizTitle" class="text-xl font-bold">More pours per keg</div>
+          <p class="text-sm text-gray-600 mt-1">Illustrative comparison using current pour sizes.</p>
+
+          <div class="mt-4 space-y-3">
+            <div class="text-sm flex items-center justify-between">
+              <span class="font-semibold">Tiny Pint</span>
+              <span id="tinyCountLabel" class="text-gray-600">198 pours</span>
+            </div>
+            <div class="w-full rounded-xl border border-pint-stone overflow-hidden" role="img" aria-label="Tiny Pint relative bar">
+              <div id="tinyBar" class="tiny-bar w-0"></div>
+            </div>
+
+            <div class="text-sm flex items-center justify-between mt-4">
+              <span class="font-semibold">Full Pint</span>
+              <span id="fullCountLabel" class="text-gray-600">124 pours</span>
+            </div>
+            <div class="w-full rounded-xl border border-pint-stone overflow-hidden" role="img" aria-label="Full Pint relative bar">
+              <div id="fullBar" class="full-bar w-0"></div>
+            </div>
           </div>
-          <div class="rounded-xl border border-pint-stone p-4">
-            <div class="font-semibold">Gross per keg</div>
-            <p class="mt-2"><span class="font-bold">Tiny:</span> <span id="tinyGross">$990</span></p>
-            <p class="mt-1"><span class="font-bold">Full:</span> <span id="fullGross">$806</span></p>
+
+          <!-- Tiny revenue math -->
+          <div class="grid gap-3 md:grid-cols-3 mt-6 text-sm">
+            <div class="rounded-xl border border-pint-stone p-4">
+              <div class="font-semibold">Assumptions</div>
+              <ul class="mt-2 text-gray-600 list-stone">
+                <li>Keg: <span id="assumeKeg">½-bbl (1,984 oz)</span></li>
+                <li>Tiny pour: <span id="assumeTiny">10 oz @ $5</span></li>
+                <li>Full pour: <span id="assumeFull">16 oz @ $6.50</span></li>
+              </ul>
+            </div>
+            <div class="rounded-xl border border-pint-stone p-4">
+              <div class="font-semibold">Gross per keg</div>
+              <p class="mt-2"><span class="font-bold">Tiny:</span> <span id="tinyGross">$990</span></p>
+              <p class="mt-1"><span class="font-bold">Full:</span> <span id="fullGross">$806</span></p>
+            </div>
+            <div class="rounded-xl border border-pint-stone p-4">
+              <div class="font-semibold">Why it matters</div>
+              <ul class="mt-2 list-stone">
+                <li>~<span id="morePct">60%</span> more pours</li>
+                <li>Fresher kegs, faster rotation</li>
+                <li>Guests can try more styles</li>
+              </ul>
+            </div>
           </div>
-          <div class="rounded-xl border border-pint-stone p-4">
-            <div class="font-semibold">Why it matters</div>
-            <ul class="mt-2 list-stone">
-              <li>~<span id="morePct">60%</span> more pours</li>
-              <li>Fresher kegs, faster rotation</li>
-              <li>Guests can try more styles</li>
-            </ul>
+
+          <p class="text-xs text-gray-600 mt-4">
+            Notes: Gross ≠ profit. COGS, tax, and tips not included.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="section max-w-4xl mx-auto py-14 md:py-20 px-4 md:px-6">
+      <h2 class="text-2xl md:text-3xl font-extrabold mb-4">About</h2>
+      <p class="text-base md:text-lg mb-6">
+        Tiny Pint is built by two Spokane bartenders who’ve spent years learning what sells, what doesn’t,
+        and where the profit really is. A small, personal taproom that runs lean, stays flexible,
+        and always feels good to be in.
+      </p>
+      <ul class="grid gap-3 md:gap-4 md:grid-cols-3">
+        <li class="card">
+          <strong>Big Beer, Small Space</strong><br />
+          <span class="text-gray-600">10 seats, 3 taps, zero chaos.</span>
+        </li>
+        <li class="card">
+          <strong>Smart Margins</strong><br />
+          <span class="text-gray-600">More pours per keg, fresher rotation.</span>
+        </li>
+        <li class="card">
+          <strong>Local Focus</strong><br />
+          <span class="text-gray-600">Regional craft without full-bar overhead.</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Menu -->
+    <section id="menu" class="section py-14 md:py-20 bg-white">
+      <div class="max-w-5xl mx-auto px-4 md:px-6 text-center">
+        <h2 class="text-2xl md:text-3xl font-extrabold mb-4">Menu</h2>
+        <p class="max-w-xl mx-auto mb-8 text-gray-600">
+          Big flavor. Small pours. Rotating taps + cans to-go. Our Tiny Pint (10–12 oz) keeps beer colder and reduces waste.
+        </p>
+        <div class="grid gap-4 md:gap-6 md:grid-cols-3">
+          <div class="card">
+            <h3 class="text-lg md:text-xl font-bold mb-1">Tiny Pint</h3>
+            <p class="text-2xl md:text-3xl font-extrabold mb-1">$4–5</p>
+            <p class="text-gray-600">10–12 oz. Perfect to the last sip.</p>
+          </div>
+          <div class="card">
+            <h3 class="text-lg md:text-xl font-bold mb-1">Full Pint</h3>
+            <p class="text-2xl md:text-3xl font-extrabold mb-1">$6–6.5</p>
+            <p class="text-gray-600">16 oz. For the thirsty.</p>
+          </div>
+          <div class="card">
+            <h3 class="text-lg md:text-xl font-bold mb-1">Tiny Flight</h3>
+            <p class="text-2xl md:text-3xl font-extrabold mb-1">$12</p>
+            <p class="text-gray-600">Three 5 oz pours. Try more, waste less.</p>
           </div>
         </div>
+      </div>
+    </section>
 
-        <p class="text-xs text-gray-600 mt-4">
-          Notes: Gross ≠ profit. COGS, tax, and tips not included.
+    <!-- Pint Club -->
+    <section id="club" class="section py-14 md:py-20">
+      <div class="max-w-5xl mx-auto px-4 md:px-6 grid gap-6 md:grid-cols-[1fr_360px] items-center">
+        <div class="text-center md:text-left">
+          <h2 class="text-2xl md:text-3xl font-extrabold mb-4">Founding Fifty — Pint Club</h2>
+          <p class="text-base md:text-lg text-gray-600 mb-6">
+            $60/year gets you a $5 first Tiny Pint per visit, quarterly member nights, and 10% off merch.
+          </p>
+          <form class="max-w-md mx-auto md:mx-0 flex flex-col sm:flex-row gap-3 justify-center md:justify-start" action="#" method="POST">
+            <input type="email" name="email" autocomplete="email" placeholder="you@beerfan.com" required class="input" />
+            <button class="btn btn-primary" type="submit">Be a Founder</button>
+          </form>
+          <p class="text-xs text-gray-500 mt-2">We’ll email when memberships open. No spam, ever.</p>
+        </div>
+
+        <aside class="card">
+          <img src="/images/founding-card.jpg" width="760" height="420" loading="lazy" decoding="async" alt="Founding Fifty membership card mockup" class="rounded-xl w-full h-48 object-cover">
+          <p class="text-sm text-gray-600 mt-3">Members get a yearly card and exclusive nights. Limited to fifty.</p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Plans & Press -->
+    <section id="plans" class="section py-14 md:py-20 bg-white">
+      <div class="max-w-5xl mx-auto px-4 md:px-6">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+          <h2 class="text-2xl md:text-3xl font-extrabold">Plans &amp; Press</h2>
+          <p class="text-sm text-gray-600 md:max-w-md">
+            Want the numbers and the story? Grab our one-pager for a quick overview, or the full plan for the deep dive.
+          </p>
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-2 mt-6">
+          <a class="card hover:text-pint-forest" href="/TinyPint_OnePager.pdf" target="_blank" rel="noopener">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg md:text-xl font-bold">Tiny Pint — One-Pager</h3>
+              <span class="badge">PDF</span>
+            </div>
+            <p class="mt-2 text-gray-600">Concept, costs, and why Tiny Pints work — one page, quick read.</p>
+          </a>
+
+          <a class="card hover:text-pint-forest" href="/TinyPint_BusinessPlan.pdf" target="_blank" rel="noopener">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg md:text-xl font-bold">Tiny Pint — Full Plan</h3>
+              <span class="badge">PDF</span>
+            </div>
+            <p class="mt-2 text-gray-600">Brand, operations, licensing, margins, launch timeline, and projections.</p>
+          </a>
+        </div>
+
+        <p class="mt-6 text-sm text-gray-600">
+          Media or landlords: email <a class="underline" href="mailto:hello@tinypint.beer">hello@tinypint.beer</a> for a press kit.
         </p>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- (remaining sections unchanged: About, Menu, Club, Plans, Location, Footer) -->
+    <!-- Location -->
+    <section id="location" class="section py-14 md:py-20">
+      <div class="max-w-4xl mx-auto px-4 md:px-6 text-center">
+        <h2 class="text-2xl md:text-3xl font-extrabold mb-4">Location &amp; Hours</h2>
+        <p>Opening soon in Spokane, WA. We’re scouting 500–1,000 sq ft with patio potential.</p>
+        <p class="text-sm mt-4 text-gray-600">Planned hours: Thu–Sat 4–10pm (soft open)</p>
+        <p class="text-sm mt-1 text-gray-600">Pop-up events &amp; industry nights coming soon.</p>
+        <p class="text-sm mt-4 text-gray-600">Contact: <a class="underline" href="mailto:hello@tinypint.beer">hello@tinypint.beer</a></p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="section py-8 md:py-10" role="contentinfo">
+    <div class="max-w-5xl mx-auto px-4 md:px-6 trust-line">
+      <p>Independent &amp; owner-operated • Beer-only tavern • 21+</p>
+      <p class="mt-2">© <script>document.write(new Date().getFullYear())</script> Tiny Pint — Big Beer, Small Space.</p>
+    </div>
+  </footer>
+
+  <!-- Sticky mobile bottom bar -->
+  <nav class="sticky-cta md:hidden" aria-label="Quick navigation">
+    <div class="max-w-6xl mx-auto px-4">
+      <ul class="grid grid-cols-3 text-center">
+        <li><a href="#taps" class="py-3 block">Menu</a></li>
+        <li><a href="#club" class="py-3 block">Join</a></li>
+        <li><a href="#location" class="py-3 block">Directions</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Inline taps data so it works immediately (you can replace with taps.json or a Sheets URL) -->
+  <script id="taps-data" type="application/json">
+  {
+    "lastUpdated": "2025-10-07T12:00:00-07:00",
+    "taps": [
+      {
+        "name": "Rainier",
+        "brewery": "Rainier Brewing",
+        "style": "Lager",
+        "abv": 4.6,
+        "sizes": { "tiny": 10, "full": 16 },
+        "price": { "tiny": 4.0, "full": 5.5 },
+        "status": "on"
+      },
+      {
+        "name": "Born & Raised",
+        "brewery": "No-Li Brewhouse",
+        "style": "IPA",
+        "abv": 7.0,
+        "sizes": { "tiny": 10, "full": 16 },
+        "price": { "tiny": 5.0, "full": 6.5 },
+        "status": "on"
+      }
+    ]
+  }
+  </script>
+
+  <!-- Minimal JS (menu + taps + tiny math) -->
+  <script>
+    // Mobile menu
+    const btn = document.getElementById('menuBtn');
+    const nav = document.getElementById('primaryNav');
+    if (btn && nav) {
+      btn.addEventListener('click', () => {
+        const willOpen = nav.classList.contains('hidden');
+        nav.classList.toggle('hidden');
+        btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      });
+    }
+
+    // Helpers
+    const $ = (id) => document.getElementById(id);
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function fmtABV(n) { return typeof n === 'number' ? `${n.toFixed(1)}% ABV` : ''; }
+    function fmtPrice(n) {
+      if (n == null || n === '') return '';
+      const s = Number(n).toFixed(2);
+      return `$${s.endsWith('.00') ? s.slice(0, -3) : s}`;
+    }
+    function fmtUpdated(iso) {
+      try { return new Date(iso).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }); }
+      catch { return iso || ''; }
+    }
+
+    // Tap data sources
+    function getInlineTapsJSON() {
+      try {
+        const el = document.querySelector('#taps-data');
+        if (!el) return null;
+        return JSON.parse(el.textContent);
+      } catch { return null; }
+    }
+
+    async function fetchTapsJSON() {
+      // If you deploy a Google Apps Script or host taps.json, set the URL here:
+      const FALLBACK_URL = 'taps.json';
+      try {
+        const res = await fetch(FALLBACK_URL, { cache: 'no-store' });
+        if (!res.ok) throw new Error('no taps.json');
+        return await res.json();
+      } catch { return null; }
+    }
+
+    async function loadTaps() {
+      const listEl = $('taps-list');
+      const emptyEl = $('taps-empty');
+      const updatedEl = $('taps-updated');
+
+      let data = getInlineTapsJSON();
+      if (!data) data = await fetchTapsJSON();
+
+      if (!data) {
+        emptyEl.textContent = 'Couldn’t load tap list. Check back soon.';
+        emptyEl.classList.remove('hidden');
+        updatedEl.textContent = '';
+        return;
+      }
+
+      updatedEl.textContent = data.lastUpdated ? `Last updated — ${fmtUpdated(data.lastUpdated)}` : '';
+
+      const taps = Array.isArray(data.taps) ? data.taps : [];
+      if (!taps.length) {
+        emptyEl.classList.remove('hidden');
+        return;
+      }
+
+      listEl.innerHTML = taps.map(t => {
+        const on = (t.status || 'on').toLowerCase() === 'on';
+        const tiny = t?.sizes?.tiny;
+        const full = t?.sizes?.full;
+        const tinyPrice = t?.price?.tiny;
+        const fullPrice = t?.price?.full;
+
+        return `
+          <article class="card ${on ? '' : 'opacity-60'}">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <h3 class="text-lg md:text-xl font-bold ${on ? '' : 'line-through'}">${t.name || 'Beer'}</h3>
+                <p class="text-sm text-gray-600">${[t.brewery, t.style].filter(Boolean).join(' — ')}</p>
+              </div>
+              ${on ? '' : '<span class="badge" aria-label="Eighty-sixed">86’d</span>'}
+            </div>
+
+            <div class="mt-3 grid grid-cols-2 gap-2 text-sm">
+              ${tiny ? `
+                <div class="rounded-xl border border-pint-stone p-3">
+                  <div class="flex items-center justify-between">
+                    <span>10–12 oz</span>
+                    <span class="tap-price">${fmtPrice(tinyPrice)}</span>
+                  </div>
+                  <div class="tap-size">Tiny Pint</div>
+                </div>` : ''
+              }
+              ${full ? `
+                <div class="rounded-xl border border-pint-stone p-3">
+                  <div class="flex items-center justify-between">
+                    <span>16 oz</span>
+                    <span class="tap-price">${fmtPrice(fullPrice)}</span>
+                  </div>
+                  <div class="tap-size">Full Pint</div>
+                </div>` : ''
+              }
+            </div>
+
+            <div class="mt-3 text-xs text-gray-600">${fmtABV(t.abv)}</div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    // Tiny Math logic
+    function runTinyMath() {
+      // Tunables
+      const KEG_OZ = 15.5 * 128;     // 1/2 bbl in oz (~1,984)
+      const TINY_OZ = 10;            // math baseline; menu says 10–12
+      const FULL_OZ = 16;
+      const TINY_PRICE = 5.00;
+      const FULL_PRICE = 6.50;
+
+      const kegOz = Math.round(KEG_OZ);
+      const tinyCount = Math.floor(kegOz / TINY_OZ);
+      const fullCount = Math.floor(kegOz / FULL_OZ);
+      const tinyGross = tinyCount * TINY_PRICE;
+      const fullGross = fullCount * FULL_PRICE;
+      const morePct = Math.round(((tinyCount / fullCount) - 1) * 100);
+
+      $('kegOz').textContent = kegOz.toLocaleString();
+      $('tinyCount').textContent = tinyCount.toLocaleString();
+      $('fullCount').textContent = fullCount.toLocaleString();
+      $('tinyCountLabel').textContent = `${tinyCount.toLocaleString()} pours`;
+      $('fullCountLabel').textContent = `${fullCount.toLocaleString()} pours`;
+      $('assumeKeg').textContent = '½-bbl (' + kegOz.toLocaleString() + ' oz)';
+      $('assumeTiny').textContent = `${TINY_OZ} oz @ $${TINY_PRICE.toFixed(2).replace(/\.00$/, '')}`;
+      $('assumeFull').textContent = `${FULL_OZ} oz @ $${FULL_PRICE.toFixed(2).replace(/\.00$/, '')}`;
+      $('tinyGross').textContent = `$${Math.round(tinyGross).toLocaleString()}`;
+      $('fullGross').textContent = `$${Math.round(fullGross).toLocaleString()}`;
+      $('morePct').textContent = isFinite(morePct) ? morePct : '—';
+
+      const maxCount = Math.max(tinyCount, fullCount);
+      const tinyW = Math.max(6, Math.round((tinyCount / maxCount) * 100));
+      const fullW = Math.max(6, Math.round((fullCount / maxCount) * 100));
+
+      const tinyBar = $('tinyBar');
+      const fullBar = $('fullBar');
+
+      if (prefersReduced) {
+        tinyBar.style.width = tinyW + '%';
+        fullBar.style.width = fullW + '%';
+      } else {
+        [tinyBar, fullBar].forEach((bar, i) => {
+          const target = i === 0 ? tinyW : fullW;
+          bar.style.transition = 'width 600ms cubic-bezier(.2,.9,.2,1)';
+          requestAnimationFrame(() => { bar.style.width = target + '%'; });
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadTaps();
+      runTinyMath();
+    });
+  </script>
+
+  <noscript>
+    <style>
+      #taps-list::after{content:"Enable JavaScript to see live tap updates.";display:block;color:#6B7280;margin-top:.5rem;font-size:.875rem}
+    </style>
+  </noscript>
 </body>
 </html>
