@@ -1,10 +1,12 @@
+// package.json
 {
   "name": "tinypint",
   "version": "1.0.0",
-  "description": "A website for a start up beer taproom.",
+  "private": true,
   "scripts": {
-    "dev": "tailwindcss -i ./style.css -o ./output.css --watch",
-    "build": "tailwindcss -i ./style.css -o ./output.css"
+    "dev": "tailwindcss -i style.css -o output.css --watch",
+    "build": "tailwindcss -i style.css -o output.css --minify",
+    "start": "npx serve ."
   },
   "devDependencies": {
     "tailwindcss": "latest",
