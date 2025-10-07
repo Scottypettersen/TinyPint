@@ -1,15 +1,18 @@
-// package.json
 {
   "name": "tinypint",
   "version": "1.0.0",
   "private": true,
+  "description": "Tiny Pint — static site with Tailwind v4 compiled CSS",
   "scripts": {
     "dev": "tailwindcss -i style.css -o output.css --watch",
     "build": "tailwindcss -i style.css -o output.css --minify",
     "start": "npx serve ."
   },
   "devDependencies": {
-    "tailwindcss": "latest",
-    "@tailwindcss/cli": "latest"
+    "@tailwindcss/cli": "latest",
+    "tailwindcss": "latest"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
