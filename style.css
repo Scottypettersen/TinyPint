@@ -1,3 +1,4 @@
+/* style.css (Tailwind source) */
 @import "tailwindcss";
 
 /* === Tiny Pint v1 Theme (Tailwind v4) === */
@@ -46,35 +47,28 @@ a:hover { @apply text-pint-forest; }
 /* Header */
 .navbar { @apply bg-white/90 backdrop-blur border-b border-pint-stone; }
 .navlink { @apply text-sm font-medium text-muted hover:text-pint-ink; }
+/* Optional: highlight current section if you set aria-current="page" */
+.navlink[aria-current="page"] { @apply text-pint-ink; }
 
 /* Mobile sticky bottom bar */
 .sticky-cta { @apply fixed inset-x-0 bottom-0 bg-white/95 border-t border-pint-stone backdrop-blur md:hidden; }
 .sticky-cta a { @apply block py-3 font-semibold text-center; }
 
-/* Badges (for taps, PDFs, "86'd", etc.) */
+/* Badges */
 .badge { @apply text-xs px-2 py-1 rounded-lg border border-pint-stone; }
 .badge-soft { @apply bg-pint-paper/60; }
 
-/* Tiny Math bars (subtle animation, respects reduced motion) */
+/* Tiny Math bars */
 .tiny-bar,
 .full-bar {
-  height: 0.75rem; /* a hair taller than h-3 for touch targets */
+  height: 0.75rem;
   transition: width 600ms cubic-bezier(.2,.9,.2,1);
 }
-.tiny-bar {
-  /* Brass -> Forest gradient for Tiny */
-  background: linear-gradient(90deg, var(--color-pint-brass), var(--color-pint-forest));
-}
-.full-bar {
-  /* neutral ink tone for Full */
-  background: color-mix(in oklab, var(--color-pint-ink) 85%, transparent);
-}
-/* Respect reduced motion */
+.tiny-bar { background: linear-gradient(90deg, var(--color-pint-brass), var(--color-pint-forest)); }
+.full-bar { background: color-mix(in oklab, var(--color-pint-ink) 85%, transparent); }
+
 @media (prefers-reduced-motion: reduce) {
-  .tiny-bar,
-  .full-bar {
-    transition: none;
-  }
+  .tiny-bar, .full-bar { transition: none; }
 }
 
 /* Tap cards layout helpers */
@@ -82,20 +76,32 @@ a:hover { @apply text-pint-forest; }
 .tap-price { @apply font-semibold; }
 .tap-size { @apply text-gray-600 mt-1; }
 
-/* Announcement bar (optional; easy toggle) */
-.announce { @apply text-center text-xs py-2 border-b border-pint-stone bg-white; }
-
 /* Footer trust line */
 .trust-line { @apply text-center text-xs md:text-sm text-gray-500; }
 
-/* Utility: subtle hr */
-.hr-stone { @apply border-t border-pint-stone; }
-
-/* Forms */
+/* Inputs */
 .input {
-  @apply w-full border border-pint-stone rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pint-forest;
+  @apply w-full border border-pint-stone rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pint-forest bg-white;
 }
 
-/* Tiny list dots inside cards (e.g., Tiny Math notes) */
+/* Lists */
 .list-stone { list-style: disc; padding-left: 1rem; }
 .list-stone li { @apply text-gray-600; }
+
+/* Images */
+.section-image { @apply rounded-xl shadow-lg w-full max-w-sm mx-auto; }
+
+/* === New: text & micro-utilities used by updated HTML === */
+
+/* Subtle note paragraph (used in Pint Club + Merch) */
+.note-text { @apply text-sm text-gray-500; }
+
+/* Optional: tiny status dot (for scarcity labels if you expose them) */
+.dot { @apply inline-block w-2.5 h-2.5 rounded-full align-middle; }
+.dot-green { background: #16a34a; }   /* ok to tweak to brand */
+.dot-amber { background: #f59e0b; }
+.dot-red   { background: #dc2626; }
+
+/* Optional: pill selector styles for segmented waitlists (if/when added) */
+.pill { @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-pint-stone text-sm text-pint-ink bg-white hover:bg-pint-paper/70; }
+.pill-active { @apply bg-pint-brass text-pint-paper border-pint-brass; }
