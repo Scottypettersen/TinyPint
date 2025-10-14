@@ -1,8 +1,3 @@
-
-[build]
-  command = ""
-  publish = "."
-
-# Optional: set a stable Node for any Netlify hooks
-[build.environment]
-  NODE_VERSION = "20"
+[functions]
+directory = "netlify/functions"
+node_bundler = "esbuild"

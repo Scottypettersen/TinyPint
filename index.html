@@ -4,7 +4,6 @@
   <!-- Base -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <title>Tiny Pint — Big Beer, Small Space</title>
   <meta name="description" content="A 10-seat taproom serving 10–12 oz pours. Scarcity, community, and great beer." />
   <link rel="canonical" href="https://tinypint.beer/" />
@@ -13,13 +12,13 @@
   <link rel="icon" type="image/png" href="/favicon.png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-  <!-- Theme color -->
+  <!-- Colors -->
   <meta name="theme-color" content="#FAF9F6" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)">
   <meta name="color-scheme" content="light">
   <meta name="robots" content="index,follow">
 
-  <!-- Styles (Tailwind v4 compiled to output.css + custom theme tokens) -->
+  <!-- Styles (Tailwind build) -->
   <link rel="stylesheet" href="output.css" />
 
   <!-- Fonts -->
@@ -50,25 +49,35 @@
   }
   </script>
 
+  <!-- Minimal inline utilities (kept tiny so no Tailwind rebuild needed) -->
   <style>
-    /* micro-utilities used by new features (kept tiny so you don't rebuild Tailwind) */
     .status-dot{display:inline-block;width:.6rem;height:.6rem;border-radius:9999px}
-    .status-fresh{background:#10B981}     /* green */
-    .status-low{background:#F59E0B}       /* amber */
-    .status-last{background:#EF4444}      /* red */
-    .strike{ text-decoration: line-through; opacity:.7 }
-    .section-image{ border-radius: .75rem; box-shadow: 0 12px 30px rgba(17,24,39,.08); width:100%; max-width:22rem; margin-inline:auto }
-    .kbd{font-family: ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.8rem; padding:.1rem .35rem; border:1px solid #e5e7eb; border-radius:.375rem; background:#fff}
-    .passport-stamp{display:inline-grid;place-items:center; width:3rem;height:3rem;border:2px dashed #E7E2DA;border-radius:.5rem}
+    .status-fresh{background:#10B981}.status-low{background:#F59E0B}.status-last{background:#EF4444}
+    .strike{text-decoration:line-through;opacity:.7}
+    .passport-stamp{display:inline-grid;place-items:center;width:3rem;height:3rem;border:2px dashed #E7E2DA;border-radius:.5rem}
     .stamp-earned{background:linear-gradient(135deg,#B07A2A22,#2E4D3A22)}
     .progress-outer{height:.5rem;border-radius:.5rem;border:1px solid #E7E2DA;overflow:hidden}
     .progress-inner{height:100%;width:0;background:linear-gradient(90deg,#B07A2A,#2E4D3A)}
     .pill{border:1px solid #E7E2DA;border-radius:9999px;padding:.25rem .5rem;font-size:.75rem}
+    .ticker{height:.5rem;border:1px solid #E7E2DA;border-radius:9999px;overflow:hidden}
+    .ticker > span{display:block;height:100%;width:0;background:linear-gradient(90deg,#2E4D3A,#B07A2A)}
+    .plaque{border:1px solid #E7E2DA;border-radius:.5rem;padding:.5rem .6rem;background:#FAF9F6}
   </style>
+
+  <!-- Supabase (read-only anon key goes here) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script defer>
+    // ⚠️ Replace with your real anon key (public) — do NOT use the service key here.
+    const SUPABASE_URL = "https://rrxcdcdpvdqspmaanlnn.supabase.co";
+    const SUPABASE_ANON = "YOUR_SUPABASE_ANON_KEY";
+    window.addEventListener('DOMContentLoaded', () => {
+      window.sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    });
+  </script>
 </head>
 
 <body class="bg-pint-paper text-pint-ink font-sans">
-  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-white focus:px-3 focus:py-2 focus:rounded-lg">Skip to content</a>
+  <a class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-white focus:px-3 focus:py-2 focus:rounded-lg" href="#main">Skip to content</a>
 
   <!-- Header -->
   <header class="navbar sticky top-0 z-50" role="banner">
@@ -78,7 +87,6 @@
 
         <!-- Hamburger -->
         <button id="menuBtn" class="rounded-lg px-3 py-2 border border-pint-stone md:hidden" aria-expanded="false" aria-controls="primaryNav" aria-label="Toggle menu">
-          <!-- simple SVG for consistent rendering -->
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="#1F2937" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
 
@@ -138,12 +146,12 @@
             <h2 class="text-2xl md:text-3xl font-extrabold">What’s Pouring</h2>
             <p class="text-xs mt-1"><span class="pill">10 seats</span> <span class="pill">~198 pours/keg</span> <span class="pill">3 taps</span></p>
           </div>
-          <p id="taps-updated" class="text-sm text-gray-600" aria-live="polite">Last updated —</p>
+          <p id="taps-updated" class="text-sm text-gray-600" aria-live="polite">Loading…</p>
         </div>
 
         <div class="grid gap-6 md:grid-cols-[1fr_380px] mt-6">
           <!-- Tap list -->
-          <div>
+          <div aria-busy="true">
             <div id="taps-list" class="tap-grid"></div>
 
             <div id="taps-empty" class="hidden mt-6 text-sm text-gray-600">
@@ -164,9 +172,11 @@
               <!-- filled by JS -->
             </div>
 
-            <form name="beer-alerts" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="mt-4 grid gap-2">
+            <div id="recently-tapped" class="mt-6" aria-live="polite"></div>
+
+            <form name="beer-alerts" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="mt-6 grid gap-2">
               <input type="hidden" name="form-name" value="beer-alerts">
-              <p class="hidden"><label>Don’t fill this out: <input name="bot-field"></label></p>
+              <p class="hidden"><label>Don’t fill this out: <input name="bot-field" /></label></p>
               <label class="text-sm text-gray-600">Get alerts when your favorite brewery hits the tap:</label>
               <input class="input" type="text" name="brewery" placeholder="Brewery (e.g., Wander, pFriem)" aria-label="Brewery name">
               <input class="input" type="email" name="email" placeholder="you@beerfan.com" autocomplete="email" required aria-label="Email for beer alerts">
@@ -212,16 +222,16 @@
               <span class="font-semibold">Tiny Pint</span>
               <span id="tinyCountLabel" class="text-gray-600">198 pours</span>
             </div>
-            <div class="w-full rounded-xl border border-pint-stone overflow-hidden" role="img" aria-label="Tiny Pint relative bar">
-              <div id="tinyBar" class="tiny-bar w-0"></div>
+            <div class="ticker" role="img" aria-label="Tiny Pint relative bar">
+              <span id="tinyBar"></span>
             </div>
 
             <div class="text-sm flex items-center justify-between mt-4">
               <span class="font-semibold">Full Pint</span>
               <span id="fullCountLabel" class="text-gray-600">124 pours</span>
             </div>
-            <div class="w-full rounded-xl border border-pint-stone overflow-hidden" role="img" aria-label="Full Pint relative bar">
-              <div id="fullBar" class="full-bar w-0"></div>
+            <div class="ticker" role="img" aria-label="Full Pint relative bar">
+              <span id="fullBar"></span>
             </div>
           </div>
 
@@ -321,7 +331,6 @@
             The Pint Club isn’t just a loyalty program; it’s how we stay small, nimble, and independent. Your support keeps the taps fresh without compromising the vision.
           </p>
 
-          <!-- segmented waitlist selector -->
           <div class="mt-6 flex flex-wrap gap-2 justify-center md:justify-start" role="group" aria-label="Choose a waitlist type">
             <button class="pill" data-waitlist="founding">Founding Fifty</button>
             <button class="pill" data-waitlist="beer-drop">Beer Drop Alerts</button>
@@ -332,7 +341,7 @@
           <form name="tiny-waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="max-w-md mx-auto md:mx-0 mt-4 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
             <input type="hidden" name="form-name" value="tiny-waitlist">
             <input type="hidden" id="waitlist-type" name="type" value="founding">
-            <p class="hidden"><label>Don’t fill this out: <input name="bot-field"></label></p>
+            <p class="hidden"><label>Don’t fill this out: <input name="bot-field" /></label></p>
             <input type="email" name="email" autocomplete="email" placeholder="you@beerfan.com" required class="input" aria-label="Email to join the selected waitlist" />
             <button class="btn btn-primary" type="submit">Join the List</button>
           </form>
@@ -346,7 +355,7 @@
       </div>
     </section>
 
-    <!-- Beer Passport (gamified repeat visits) -->
+    <!-- Beer Passport -->
     <section id="passport" class="section py-14 md:py-20 bg-white">
       <div class="max-w-5xl mx-auto px-4 md:px-6">
         <div class="flex items-end justify-between gap-3">
@@ -364,9 +373,7 @@
 
           <div class="card">
             <div class="font-semibold">Stamps</div>
-            <div id="passport-stamps" class="mt-3 grid grid-cols-5 gap-2">
-              <!-- stamps injected -->
-            </div>
+            <div id="passport-stamps" class="mt-3 grid grid-cols-5 gap-2"></div>
           </div>
 
           <div class="card">
@@ -385,11 +392,9 @@
     <section id="merch" class="section py-14 md:py-20 text-center">
       <div class="max-w-3xl mx-auto px-4 md:px-6">
         <h2 class="text-2xl md:text-3xl font-extrabold mb-4">Merchandise</h2>
-        <p class="text-base md:text-lg text-gray-600 mb-6">
-          Support our small space with a big statement. Wear the Tiny Pint logo and become a walking billboard for great beer.
-        </p>
+        <p class="text-base md:text-lg text-gray-600 mb-6">Support our small space with a big statement.</p>
         <div class="flex justify-center">
-          <img src="/images/merch.jpg" alt="Tiny Pint branded hat and shirt" class="section-image">
+          <img src="/images/merch.jpg" alt="Tiny Pint branded hat and shirt" class="rounded-xl w-full max-w-md shadow">
         </div>
         <p class="text-sm text-gray-500 mt-4">Pre-orders open soon. Members get first dibs.</p>
       </div>
@@ -429,34 +434,6 @@
       </div>
     </section>
 
-    <!-- News / Blog -->
-    <section id="news" class="section py-14 md:py-20">
-      <div class="max-w-5xl mx-auto px-4 md:px-6">
-        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
-          <h2 class="text-2xl md:text-3xl font-extrabold">News &amp; Notes</h2>
-          <a href="/news/" class="navlink underline">View all updates</a>
-        </div>
-
-        <div class="grid gap-4 md:grid-cols-3 mt-6">
-          <article class="card">
-            <div class="text-xs text-gray-500">Oct 7</div>
-            <h3 class="text-lg font-bold mt-1">Why Tiny Pints Work</h3>
-            <p class="mt-2 text-gray-600">Smaller pours, fresher beer, more styles on deck. The math is simple — and delicious.</p>
-          </article>
-          <article class="card">
-            <div class="text-xs text-gray-500">Sept 28</div>
-            <h3 class="text-lg font-bold mt-1">Sourcing the Right Kegs</h3>
-            <p class="mt-2 text-gray-600">We’re working with regional distributors and breweries we love to keep rotation tight.</p>
-          </article>
-          <article class="card">
-            <div class="text-xs text-gray-500">Sept 16</div>
-            <h3 class="text-lg font-bold mt-1">Building the Room</h3>
-            <p class="mt-2 text-gray-600">A small footprint with warm lighting, wood, and a couple of honest fridges. That’s it.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
     <!-- Location -->
     <section id="location" class="section py-14 md:py-20">
       <div class="max-w-4xl mx-auto px-4 md:px-6 text-center">
@@ -488,51 +465,9 @@
     </div>
   </nav>
 
-  <!-- Inline taps (can be replaced by taps.json or a Google Sheet Apps Script) -->
-  <script id="taps-data" type="application/json">
-  {
-    "lastUpdated": "2025-10-07T12:00:00-07:00",
-    "taps": [
-      {
-        "name": "Rainier",
-        "brewery": "Rainier Brewing",
-        "style": "Lager",
-        "abv": 4.6,
-        "sizes": { "tiny": 10, "full": 16 },
-        "price": { "tiny": 4.0, "full": 5.5 },
-        "poursRemaining": 172,
-        "tappedAt": "2025-10-07T10:00:00-07:00",
-        "status": "on"
-      },
-      {
-        "name": "Born & Raised",
-        "brewery": "No-Li Brewhouse",
-        "style": "IPA",
-        "abv": 7.0,
-        "sizes": { "tiny": 10, "full": 16 },
-        "price": { "tiny": 5.0, "full": 6.5 },
-        "poursRemaining": 34,
-        "tappedAt": "2025-10-06T16:30:00-07:00",
-        "status": "on"
-      },
-      {
-        "name": "Wander Hazy",
-        "brewery": "Wander Brewing",
-        "style": "Hazy IPA",
-        "abv": 6.4,
-        "sizes": { "tiny": 10, "full": 16 },
-        "price": { "tiny": 5.0, "full": 6.5 },
-        "poursRemaining": 8,
-        "tappedAt": "2025-10-05T15:45:00-07:00",
-        "status": "on"
-      }
-    ]
-  }
-  </script>
-
-  <!-- App JS: scarcity engine, passport, dynamic pricing, segmented waitlists -->
+  <!-- ---------- APP JS ---------- -->
   <script>
-    // ---------- Mobile menu ----------
+    // ------- Mobile menu -------
     const btn = document.getElementById('menuBtn');
     const nav = document.getElementById('primaryNav');
     if (btn && nav) {
@@ -543,75 +478,49 @@
       });
     }
 
-    // ---------- Helpers ----------
+    // ------- Helpers -------
     const $ = (id) => document.getElementById(id);
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const asMoney = (n)=> {
+    const asMoney = (n) => {
       const s = Number(n).toFixed(2);
       return `$${s.endsWith('.00') ? s.slice(0,-3) : s}`;
     };
-    function fmtABV(n) { return typeof n === 'number' ? `${n.toFixed(1)}% ABV` : ''; }
-    function fmtUpdated(iso) { try { return new Date(iso).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }); } catch { return iso || ''; } }
+    const fmtABV = (n) => typeof n === 'number' ? `${n.toFixed(1)}% ABV` : '';
+    const fmtUpdated = (iso) => { try { return new Date(iso).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }); } catch { return iso || ''; } };
 
-    // ---------- Live views (FOMO/social proof) ----------
+    // ------- Live views (client-side demo) -------
     (function liveViews(){
-      const k = 'tp_views';
-      const hour = 60*60*1000;
-      const now = Date.now();
-      // keep an array of timestamps for the last hour (client-side demo)
-      let arr = JSON.parse(localStorage.getItem(k) || '[]').filter(t => now - t < hour);
-      // push this view
+      const k = 'tp_views', hr = 60*60*1000, now = Date.now();
+      let arr = JSON.parse(localStorage.getItem(k) || '[]').filter(t => now - t < hr);
       arr.push(now);
       localStorage.setItem(k, JSON.stringify(arr));
       const el = $('live-views');
       if (el) el.textContent = `${arr.length} people checked this page in the last hour`;
     })();
 
-    // ---------- Tap data sources ----------
-    function getInlineTapsJSON() {
-      try { const el = document.querySelector('#taps-data'); return el ? JSON.parse(el.textContent) : null; } catch { return null; }
-    }
-    async function fetchTapsJSON() {
-      // Future: Replace with a Google Apps Script Sheet-to-JSON endpoint
-      const FALLBACK_URL = 'taps.json';
-      try {
-        const res = await fetch(FALLBACK_URL, { cache: 'no-store' });
-        if (!res.ok) throw new Error('no taps.json');
-        return await res.json();
-      } catch { return null; }
-    }
-
-    // ---------- Scarcity engine ----------
+    // ------- Scarcity engine -------
     function scarcityBadge(pours) {
-      if (pours <= 12) return { text:`LAST CALL · ${pours} pours left`, cls:'status-last', tone:'#EF4444' };
-      if (pours <= 40) return { text:`RUNNING LOW · ${pours} remaining`, cls:'status-low', tone:'#F59E0B' };
-      return { text:`FRESH · just tapped`, cls:'status-fresh', tone:'#10B981' };
+      if (pours <= 12) return { text:`LAST CALL · ${pours} pours left`, cls:'status-last' };
+      if (pours <= 40) return { text:`RUNNING LOW · ${pours} remaining`, cls:'status-low' };
+      return { text:`FRESH · just tapped`, cls:'status-fresh' };
     }
 
-    // ---------- Dynamic pricing (time & inventory) ----------
-    // Rules (no surge; only discounts)
+    // ------- Dynamic pricing (client demo rules) -------
     const dynamicRules = {
-      happyHour: { days:[1,2,3], start:'15:00', end:'17:00', tiny:3.50 }, // Mon=1 .. Sun=0 (Date.getDay)
-      lastCallOff: 1.00,   // $1 off when poursRemaining <= 20
+      happyHour: { days:[1,2,3], start:'15:00', end:'17:00', tiny:3.50 }, // Mon=1..Wed=3
+      lastCallOff: 1.00
     };
     function withinWindow(start, end, d=new Date()){
-      const [sh,sm] = start.split(':').map(Number);
-      const [eh,em] = end.split(':').map(Number);
+      const [sh,sm] = start.split(':').map(Number), [eh,em] = end.split(':').map(Number);
       const t = d.getHours()*60 + d.getMinutes();
-      const a = sh*60 + sm, b = eh*60 + em;
-      return t>=a && t<=b;
+      return t >= (sh*60 + sm) && t <= (eh*60 + em);
     }
     function priceFor(tap, basePrice, now=new Date()){
-      let label = null;
-      let price = basePrice;
-
-      // Last call discount by inventory
+      let label = null, price = basePrice;
       if (typeof tap.poursRemaining === 'number' && tap.poursRemaining <= 20) {
         price = Math.max(0, basePrice - dynamicRules.lastCallOff);
-        label = `Last call pricing: ${asMoney(dynamicRules.lastCallOff)} off`;
+        label = `Last call pricing`;
       }
-
-      // Happy hour (Mon–Wed 3–5pm) — overrides if even lower
       const dow = now.getDay();
       if (dynamicRules.happyHour.days.includes(dow) && withinWindow(dynamicRules.happyHour.start, dynamicRules.happyHour.end, now)) {
         if (dynamicRules.happyHour.tiny < price) {
@@ -622,98 +531,47 @@
       return { price, label };
     }
 
-    // ---------- Beer Passport (client demo; prod would save server-side) ----------
-    const PASS_KEY = 'tp_passport';
-    function loadPassport(){ return JSON.parse(localStorage.getItem(PASS_KEY) || '{"stamps":[],"breweries":{},"styles":{}}'); }
-    function savePassport(p){ localStorage.setItem(PASS_KEY, JSON.stringify(p)); }
-    function addStamp(tap){
-      const p = loadPassport();
-      const id = `${tap.brewery} • ${tap.name}`;
-      if (!p.stamps.includes(id)) p.stamps.push(id);
-      p.breweries[tap.brewery] = (p.breweries[tap.brewery]||0) + 1;
-      p.styles[tap.style] = (p.styles[tap.style]||0) + 1;
-      savePassport(p);
-      renderPassport();
-      toast(`Stamped: ${tap.name}`);
-      maybeNotifyPerks();
+    // ------- Supabase reads -------
+    async function fetchActiveTaps() {
+      const { data, error } = await sb
+        .from('taps')
+        .select('id,name,brewery,style,abv,pours_remaining,keg_size_oz,is_on_tap,tapped_at,updated_at')
+        .eq('is_on_tap', true)
+        .order('brewery', { ascending: true });
+      if (error) throw error;
+      return (data || []).map(r => ({
+        id: r.id,
+        name: r.name,
+        brewery: r.brewery,
+        style: r.style,
+        abv: Number(r.abv),
+        sizes: { tiny: 10, full: 16 },       // demo constants (can be per-beer later)
+        price: { tiny: 5.0, full: 6.5 },
+        poursRemaining: r.pours_remaining,
+        tappedAt: r.tapped_at,
+        status: r.is_on_tap ? 'on' : 'off'
+      }));
     }
-    function renderPassport(){
-      const p = loadPassport();
-      const total = Math.min(p.stamps.length, 20);
-      const pct = (total/20)*100;
-      const prog = $('passport-progress'); if (prog) prog.style.width = `${pct}%`;
-      const stats = $('passport-stats'); if (stats) stats.textContent = `${p.stamps.length} stamps • ${Object.keys(p.breweries).length} breweries • ${Object.keys(p.styles).length} styles`;
-      const box = $('passport-stamps');
-      if (box) {
-        box.innerHTML = '';
-        for(let i=0;i<20;i++){
-          const div = document.createElement('div');
-          div.className = 'passport-stamp' + (i<total ? ' stamp-earned' : '');
-          div.textContent = i<total ? '✓' : '';
-          box.appendChild(div);
-        }
-      }
-    }
-    function maybeNotifyPerks(){
-      const p = loadPassport();
-      if (p.stamps.length === 5) toast('Perk unlocked: 10% off next visit');
-      if (p.stamps.length === 10) toast('Perk unlocked: Free Tiny Flight');
+    async function fetchRecentlyKicked(hours=24) {
+      const since = new Date(Date.now() - hours*3600*1000).toISOString();
+      const { data, error } = await sb
+        .from('taps')
+        .select('id,name,brewery,updated_at')
+        .eq('is_on_tap', false)
+        .gte('updated_at', since)
+        .order('updated_at', { ascending: false })
+        .limit(8);
+      if (error) throw error;
+      return data || [];
     }
 
-    // ---------- Tiny Math logic ----------
-    function runTinyMath() {
-      const KEG_OZ = 15.5 * 128;
-      const TINY_OZ = 10;
-      const FULL_OZ = 16;
-      const TINY_PRICE = 5.00;
-      const FULL_PRICE = 6.50;
-
-      const kegOz = Math.round(KEG_OZ);
-      const tinyCount = Math.floor(kegOz / TINY_OZ);
-      const fullCount = Math.floor(kegOz / FULL_OZ);
-      const tinyGross = tinyCount * TINY_PRICE;
-      const fullGross = fullCount * FULL_PRICE;
-      const morePct = Math.round(((tinyCount / fullCount) - 1) * 100);
-
-      $('kegOz').textContent = kegOz.toLocaleString();
-      $('tinyCount').textContent = tinyCount.toLocaleString();
-      $('fullCount').textContent = fullCount.toLocaleString();
-      $('tinyCountLabel').textContent = `${tinyCount.toLocaleString()} pours`;
-      $('fullCountLabel').textContent = `${fullCount.toLocaleString()} pours`;
-      $('assumeKeg').textContent = '½-bbl (' + kegOz.toLocaleString() + ' oz)';
-      $('assumeTiny').textContent = `${TINY_OZ} oz @ $${TINY_PRICE.toFixed(2).replace(/\.00$/, '')}`;
-      $('assumeFull').textContent = `${FULL_OZ} oz @ $${FULL_PRICE.toFixed(2).replace(/\.00$/, '')}`;
-      $('tinyGross').textContent = `$${Math.round(tinyGross).toLocaleString()}`;
-      $('fullGross').textContent = `$${Math.round(fullGross).toLocaleString()}`;
-      $('morePct').textContent = isFinite(morePct) ? morePct : '—';
-
-      const maxCount = Math.max(tinyCount, fullCount);
-      const tinyW = Math.max(6, Math.round((tinyCount / maxCount) * 100));
-      const fullW = Math.max(6, Math.round((fullCount / maxCount) * 100));
-
-      const tinyBar = $('tinyBar');
-      const fullBar = $('fullBar');
-
-      if (prefersReduced) {
-        tinyBar.style.width = tinyW + '%';
-        fullBar.style.width = fullW + '%';
-      } else {
-        [tinyBar, fullBar].forEach((bar, i) => {
-          const target = i === 0 ? tinyW : fullW;
-          bar.style.transition = 'width 600ms cubic-bezier(.2,.9,.2,1)';
-          requestAnimationFrame(() => { bar.style.width = target + '%'; });
-        });
-      }
-    }
-
-    // ---------- Render taps, scarcity, dynamic pricing, actions ----------
+    // ------- Renderers -------
     function renderOnTapNow(taps){
-      const wrap = document.getElementById('ontap-now');
+      const wrap = $('ontap-now');
       if (!wrap) return;
-      wrap.innerHTML = '<div class="text-sm text-gray-600 mb-1">On tap now</div>';
-      const list = taps.filter(t=> (t.status||'on').toLowerCase()==='on').slice(0,3);
-      list.forEach(t=>{
-        const s = scarcityBadge(typeof t.poursRemaining==='number' ? t.poursRemaining : 999);
+      wrap.innerHTML = '<div class="text-sm text-gray-600">On tap now</div>';
+      taps.filter(t => (t.status||'on') === 'on').slice(0,3).forEach(t => {
+        const s = scarcityBadge(t.poursRemaining ?? 999);
         const row = document.createElement('div');
         row.className = 'flex items-center gap-2 mt-2';
         row.innerHTML = `<span class="status-dot ${s.cls}" aria-hidden="true"></span><span class="text-sm">${t.name} <span class="text-gray-600">· ${t.style}</span></span>`;
@@ -721,61 +579,58 @@
       });
     }
 
-    async function loadTaps() {
+    function renderTaps(taps){
       const listEl = $('taps-list');
       const emptyEl = $('taps-empty');
       const updatedEl = $('taps-updated');
 
-      let data = getInlineTapsJSON();
-      if (!data) data = await fetchTapsJSON();
-
-      if (!data) {
-        emptyEl.textContent = 'Couldn’t load tap list. Check back soon.';
-        emptyEl.classList.remove('hidden');
-        updatedEl.textContent = '';
-        return;
-      }
-
-      updatedEl.textContent = data.lastUpdated ? `Last updated — ${fmtUpdated(data.lastUpdated)}` : '';
-      const taps = Array.isArray(data.taps) ? data.taps : [];
+      listEl.parentElement?.setAttribute('aria-busy','false');
       if (!taps.length) {
         emptyEl.textContent = 'Taps rotate fast. Nothing listed right now — check back shortly.';
         emptyEl.classList.remove('hidden');
+        updatedEl.textContent = '';
+        listEl.innerHTML = '';
         return;
       }
 
-      // Sort: last call first, then low, then fresh (drives urgency)
-      taps.sort((a,b)=>{
-        const ar = a.poursRemaining ?? 999, br = b.poursRemaining ?? 999;
-        return ar - br;
-      });
+      emptyEl.classList.add('hidden');
+      updatedEl.textContent = `Live · ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
+
+      // Sort by scarcity (low first)
+      taps.sort((a,b)=> (a.poursRemaining ?? 999) - (b.poursRemaining ?? 999));
 
       listEl.innerHTML = taps.map((t, idx) => {
-        const on = (t.status || 'on').toLowerCase() === 'on';
-        const tiny = t?.sizes?.tiny;
-        const full = t?.sizes?.full;
-        const tinyBase = t?.price?.tiny;
-        const fullBase = t?.price?.full;
-
-        // pricing transforms
+        const on = (t.status || 'on') === 'on';
+        const tinyBase = t?.price?.tiny, fullBase = t?.price?.full;
         const tinyDyn = typeof tinyBase === 'number' ? priceFor(t, tinyBase) : null;
         const fullDyn = typeof fullBase === 'number' ? priceFor(t, fullBase) : null;
+        const scarcity = scarcityBadge(t.poursRemaining ?? 999);
 
-        const scarcity = scarcityBadge(typeof t.poursRemaining==='number' ? t.poursRemaining : 999);
-        const tappedAgo = t.tappedAt ? new Intl.RelativeTimeFormat([], {numeric:'auto'}).format(Math.round((new Date(t.tappedAt)-Date.now())/86400000),'day').replace('in ','').replace('ago','ago') : '';
+        // Keg ticker width: assume 198 pours full scale
+        const totalPours = 198;
+        const pct = Math.max(0, Math.min(100, Math.round(((t.poursRemaining ?? totalPours) / totalPours)*100)));
 
         return `
           <article class="card ${on ? '' : 'opacity-60'}">
             <div class="flex items-start justify-between gap-3">
               <div>
                 <h3 class="text-lg md:text-xl font-bold ${on ? '' : 'line-through'}">${t.name || 'Beer'}</h3>
-                <p class="text-sm text-gray-600">${[t.brewery, t.style].filter(Boolean).join(' · ')} ${tappedAgo ? `<span class="text-gray-500">• ${tappedAgo}</span>`:''}</p>
+                <p class="text-sm text-gray-600">${[t.brewery, t.style].filter(Boolean).join(' · ')}</p>
               </div>
               ${on ? `<span class="pill"><span class="status-dot ${scarcity.cls}" aria-hidden="true"></span> ${scarcity.text}</span>` : '<span class="badge" aria-label="Eighty-sixed">86’d</span>'}
             </div>
 
+            <!-- Keg Ticker -->
+            <div class="mt-3">
+              <div class="ticker" role="img" aria-label="Approximate keg level">
+                <span style="width:${pct}%"></span>
+              </div>
+              <div class="text-xs text-gray-600 mt-1">${t.poursRemaining ?? '—'} pours remaining</div>
+            </div>
+
+            <!-- Pricing -->
             <div class="mt-3 grid grid-cols-2 gap-2 text-sm">
-              ${tiny ? `
+              ${t?.sizes?.tiny ? `
                 <div class="rounded-xl border border-pint-stone p-3">
                   <div class="flex items-center justify-between">
                     <span>10–12 oz</span>
@@ -784,9 +639,8 @@
                     </span>
                   </div>
                   <div class="tap-size">Tiny Pint ${tinyDyn?.label ? `<span class="text-gray-500">• ${tinyDyn.label}</span>`:''}</div>
-                </div>` : ''
-              }
-              ${full ? `
+                </div>` : '' }
+              ${t?.sizes?.full ? `
                 <div class="rounded-xl border border-pint-stone p-3">
                   <div class="flex items-center justify-between">
                     <span>16 oz</span>
@@ -795,8 +649,7 @@
                     </span>
                   </div>
                   <div class="tap-size">Full Pint ${fullDyn?.label ? `<span class="text-gray-500">• ${fullDyn.label}</span>`:''}</div>
-                </div>` : ''
-              }
+                </div>` : '' }
             </div>
 
             <div class="mt-3 flex items-center justify-between">
@@ -804,28 +657,31 @@
               <div class="flex gap-2">
                 <button class="pill" data-stamp='${idx}'>I had this</button>
                 <button class="pill" data-reserve='${idx}'>Reserve 1</button>
-                <button class="pill" data-rate='${idx}' title="Rate this beer">Rate ★</button>
+                <button class="pill" data-rate='${idx}' aria-label="Rate this beer">Rate ★</button>
               </div>
             </div>
+
+            <!-- Adoption plaque (placeholder; will read from keg_adoptions later) -->
+            <div class="mt-3 text-sm text-gray-700" data-plaque hidden></div>
           </article>
         `;
       }).join('');
 
-      // Attach actions
+      // Wire actions
       listEl.querySelectorAll('[data-stamp]').forEach(btn=>{
-        btn.addEventListener('click', e=>{
+        btn.addEventListener('click', ()=>{
           const tap = taps[Number(btn.dataset.stamp)];
           addStamp(tap);
         });
       });
       listEl.querySelectorAll('[data-reserve]').forEach(btn=>{
-        btn.addEventListener('click', e=>{
+        btn.addEventListener('click', ()=>{
           const tap = taps[Number(btn.dataset.reserve)];
           reservePour(tap);
         });
       });
       listEl.querySelectorAll('[data-rate]').forEach(btn=>{
-        btn.addEventListener('click', e=>{
+        btn.addEventListener('click', ()=>{
           const tap = taps[Number(btn.dataset.rate)];
           rateBeer(tap);
         });
@@ -833,47 +689,123 @@
 
       renderOnTapNow(taps);
       updatePricingBanner();
+
+      // Demo: show one plaque nicely
+      const firstPlaque = listEl.querySelector('[data-plaque]');
+      if (firstPlaque) {
+        firstPlaque.hidden = false;
+        firstPlaque.className = 'plaque mt-3';
+        firstPlaque.innerHTML = `
+          <div class="text-[10px] uppercase tracking-wide text-gray-500">Adopted by</div>
+          <div class="font-semibold">Drew K.</div>
+          <div class="text-xs text-gray-600 mt-1">“A perfect beer for a perfect Spokane afternoon.”</div>
+        `;
+      }
     }
 
-    // ---------- Reserve flow (commit before arriving; local demo only) ----------
+    async function renderRecentlyTapped() {
+      const box = $('recently-tapped');
+      if (!box) return;
+      try {
+        const list = await fetchRecentlyKicked(24);
+        if (!list.length) { box.innerHTML = ''; return; }
+        box.innerHTML = `
+          <div class="text-sm text-gray-600 mb-2">Recently tapped</div>
+          <div class="grid gap-2">
+            ${list.map(k => `
+              <div class="rounded-lg border border-pint-stone p-3 bg-white opacity-90">
+                <div class="font-semibold">${k.brewery} — ${k.name}</div>
+                <div class="text-xs text-gray-600">Kicked: ${new Date(k.updated_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} · 198 pours of glory</div>
+              </div>`).join('')}
+          </div>
+        `;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // ------- Fallback loaders -------
+    function getInlineTapsJSON() {
+      try { const el = document.querySelector('#taps-data'); return el ? JSON.parse(el.textContent) : null; } catch { return null; }
+    }
+    async function fetchTapsJSON() {
+      try { const res = await fetch('taps.json', { cache:'no-store' }); if (!res.ok) throw 0; return await res.json(); } catch { return null; }
+    }
+    async function loadFromFallback() {
+      const updatedEl = $('taps-updated');
+      const local = getInlineTapsJSON() || await fetchTapsJSON();
+      if (!local) { renderTaps([]); return; }
+      updatedEl.textContent = local?.lastUpdated ? `Last updated — ${fmtUpdated(local.lastUpdated)}` : '';
+      renderTaps(local?.taps || []);
+    }
+
+    // ------- Realtime -------
+    function bootRealtime() {
+      sb.channel('realtime:taps')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'taps' }, async () => {
+          try { const taps = await fetchActiveTaps(); renderTaps(taps); renderRecentlyTapped(); } catch(e){ console.error(e); }
+        })
+        .subscribe();
+    }
+
+    // ------- Passport (demo; local storage) -------
+    const PASS_KEY = 'tp_passport';
+    const loadPassport = () => JSON.parse(localStorage.getItem(PASS_KEY) || '{"stamps":[],"breweries":{},"styles":{}}');
+    const savePassport = (p) => localStorage.setItem(PASS_KEY, JSON.stringify(p));
+    function addStamp(tap){
+      const p = loadPassport();
+      const id = `${tap.brewery} • ${tap.name}`;
+      if (!p.stamps.includes(id)) p.stamps.push(id);
+      p.breweries[tap.brewery] = (p.breweries[tap.brewery]||0) + 1;
+      p.styles[tap.style] = (p.styles[tap.style]||0) + 1;
+      savePassport(p); renderPassport(); toast(`Stamped: ${tap.name}`); maybeNotifyPerks();
+    }
+    function renderPassport(){
+      const p = loadPassport();
+      const total = Math.min(p.stamps.length, 20), pct = (total/20)*100;
+      const prog = $('passport-progress'); if (prog) prog.style.width = `${pct}%`;
+      const stats = $('passport-stats'); if (stats) stats.textContent = `${p.stamps.length} stamps • ${Object.keys(p.breweries).length} breweries • ${Object.keys(p.styles).length} styles`;
+      const box = $('passport-stamps'); if (!box) return;
+      box.innerHTML = '';
+      for(let i=0;i<20;i++){
+        const d = document.createElement('div');
+        d.className = 'passport-stamp' + (i<total ? ' stamp-earned' : '');
+        d.textContent = i<total ? '✓' : '';
+        box.appendChild(d);
+      }
+    }
+    function maybeNotifyPerks(){
+      const p = loadPassport();
+      if (p.stamps.length === 5) toast('Perk unlocked: 10% off next visit');
+      if (p.stamps.length === 10) toast('Perk unlocked: Free Tiny Flight');
+    }
+
+    // ------- Reserve & Rate (demo UX only) -------
     function reservePour(tap){
       const key = 'tp_reservations';
       const all = JSON.parse(localStorage.getItem(key)||'[]');
       all.push({ at:Date.now(), tap:`${tap.brewery} • ${tap.name}` });
       localStorage.setItem(key, JSON.stringify(all));
-      toast(`Reserved 1: ${tap.name}. Show this at the bar (${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}).`);
-      // push notification demo
+      toast(`Reserved 1: ${tap.name}. Show this at the bar.`);
       maybeNotify(`Reservation confirmed for ${tap.name}`, { body: 'Show this message at Tiny Pint.' });
     }
-
-    // ---------- Ratings (local demo) ----------
     function rateBeer(tap){
-      const s = prompt(`Rate ${tap.name} (1–5 stars):`, '5');
-      const n = Number(s);
+      const s = prompt(`Rate ${tap.name} (1–5 stars):`, '5'); const n = Number(s);
       if (!n || n<1 || n>5) return;
-      const key = 'tp_ratings';
-      const all = JSON.parse(localStorage.getItem(key)||'{}');
-      const id = `${tap.brewery} • ${tap.name}`;
-      const prev = all[id] || { total:0, count:0 };
+      const key = 'tp_ratings', all = JSON.parse(localStorage.getItem(key)||'{}');
+      const id = `${tap.brewery} • ${tap.name}`, prev = all[id] || { total:0, count:0 };
       prev.total += n; prev.count += 1; all[id] = prev;
       localStorage.setItem(key, JSON.stringify(all));
       toast(`Thanks! Current avg: ${(prev.total/prev.count).toFixed(1)}★ (${prev.count})`);
     }
 
-    // ---------- Toast (tiny) ----------
+    // ------- Toast & notifications -------
     function toast(msg){
       const div = document.createElement('div');
-      div.textContent = msg;
-      div.setAttribute('role','status');
-      div.style.position='fixed'; div.style.left='50%'; div.style.bottom='1.25rem';
-      div.style.transform='translateX(-50%)'; div.style.padding='.6rem .8rem';
-      div.style.background='#1F2937'; div.style.color='#fff'; div.style.borderRadius='.5rem';
-      div.style.boxShadow='0 10px 25px rgba(0,0,0,.15)';
-      document.body.appendChild(div);
-      setTimeout(()=>div.remove(), 2400);
+      div.textContent = msg; div.setAttribute('role','status');
+      Object.assign(div.style,{position:'fixed',left:'50%',bottom:'1.25rem',transform:'translateX(-50%)',padding:'.6rem .8rem',background:'#1F2937',color:'#fff',borderRadius:'.5rem',boxShadow:'0 10px 25px rgba(0,0,0,.15)',zIndex:9999});
+      document.body.appendChild(div); setTimeout(()=>div.remove(),2400);
     }
-
-    // ---------- Notifications opt-in ----------
     async function maybeNotify(title, options){
       try {
         if (!('Notification' in window)) return;
@@ -885,7 +817,15 @@
       } catch {}
     }
 
-    // ---------- Active section highlighting (a11y + future styling) ----------
+    // ------- Pricing banner -------
+    function updatePricingBanner(){
+      const now = new Date(), dow = now.getDay();
+      const isHH = dynamicRules.happyHour.days.includes(dow) && withinWindow(dynamicRules.happyHour.start,dynamicRules.happyHour.end,now);
+      const el = $('pricing-banner'); if (!el) return;
+      el.textContent = isHH ? `Happy Hour: ${dynamicRules.happyHour.start}–${dynamicRules.happyHour.end} (Mon–Wed). Tiny Pints ${asMoney(dynamicRules.happyHour.tiny)}.` : '';
+    }
+
+    // ------- Section highlight (a11y polish) -------
     (function sectionHighlight(){
       const links = [...document.querySelectorAll('a.navlink[href^="#"]')];
       const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
@@ -900,47 +840,75 @@
       sections.forEach(s => io.observe(s));
     })();
 
-    // ---------- Pricing banner (explains dynamic pricing if active) ----------
-    function updatePricingBanner(){
-      const now = new Date();
-      const dow = now.getDay();
-      const isHH = dynamicRules.happyHour.days.includes(dow) && withinWindow(dynamicRules.happyHour.start,dynamicRules.happyHour.end,now);
-      const el = $('pricing-banner');
-      if (!el) return;
-      if (isHH) el.textContent = `Happy Hour: ${dynamicRules.happyHour.start}–${dynamicRules.happyHour.end} (Mon–Wed). Tiny Pints ${asMoney(dynamicRules.happyHour.tiny)}.`;
-      else el.textContent = '';
+    // ------- Tiny Math -------
+    function runTinyMath() {
+      const KEG_OZ = 15.5 * 128, TINY_OZ = 10, FULL_OZ = 16, TINY_PRICE = 5.00, FULL_PRICE = 6.50;
+      const kegOz = Math.round(KEG_OZ);
+      const tinyCount = Math.floor(kegOz / TINY_OZ), fullCount = Math.floor(kegOz / FULL_OZ);
+      const tinyGross = tinyCount * TINY_PRICE, fullGross = fullCount * FULL_PRICE;
+      const morePct = Math.round(((tinyCount / fullCount) - 1) * 100);
+      $('kegOz').textContent = kegOz.toLocaleString();
+      $('tinyCount').textContent = tinyCount.toLocaleString();
+      $('fullCount').textContent = fullCount.toLocaleString();
+      $('tinyCountLabel').textContent = `${tinyCount.toLocaleString()} pours`;
+      $('fullCountLabel').textContent = `${fullCount.toLocaleString()} pours`;
+      $('assumeKeg').textContent = '½-bbl (' + kegOz.toLocaleString() + ' oz)';
+      $('assumeTiny').textContent = `${TINY_OZ} oz @ $${TINY_PRICE.toFixed(2).replace(/\.00$/,'')}`;
+      $('assumeFull').textContent = `${FULL_OZ} oz @ $${FULL_PRICE.toFixed(2).replace(/\.00$/,'')}`;
+      $('tinyGross').textContent = `$${Math.round(tinyGross).toLocaleString()}`;
+      $('fullGross').textContent = `$${Math.round(fullGross).toLocaleString()}`;
+      $('morePct').textContent = isFinite(morePct) ? morePct : '—';
+
+      const maxCount = Math.max(tinyCount, fullCount);
+      const tinyW = Math.max(6, Math.round((tinyCount / maxCount) * 100));
+      const fullW = Math.max(6, Math.round((fullCount / maxCount) * 100));
+      const tinyBar = $('tinyBar'), fullBar = $('fullBar');
+      if (prefersReduced) { tinyBar.style.width = tinyW + '%'; fullBar.style.width = fullW + '%'; }
+      else {
+        [tinyBar, fullBar].forEach((bar, i) => {
+          const target = i === 0 ? tinyW : fullW;
+          bar.style.transition = 'width 600ms cubic-bezier(.2,.9,.2,1)';
+          requestAnimationFrame(() => { bar.style.width = target + '%'; });
+        });
+      }
     }
 
-    // ---------- Segmented waitlist UI ----------
-    document.addEventListener('click', (e)=>{
-      const btn = e.target.closest('[data-waitlist]');
-      if (!btn) return;
-      const type = btn.getAttribute('data-waitlist');
-      const input = $('waitlist-type'); if (input) input.value = type;
-      document.querySelectorAll('[data-waitlist]').forEach(b=>b.classList.remove('bg-white'));
-      btn.classList.add('bg-white');
-      toast(`Selected: ${type.replace('-', ' ')}`);
-    });
-
-    // ---------- Init ----------
+    // ------- Passport init -------
     function bootPassportUI(){
       renderPassport();
       const reset = $('btn-reset-passport');
       if (reset) reset.addEventListener('click', ()=>{ localStorage.removeItem(PASS_KEY); renderPassport(); toast('Passport reset (demo).'); });
     }
 
-    // ---------- Run ----------
+    // ------- Boot -------
     document.addEventListener('DOMContentLoaded', async () => {
       runTinyMath();
       bootPassportUI();
-      await loadTaps();
+
+      const listWrap = $('taps-list').parentElement;
+      listWrap?.setAttribute('aria-busy','true');
+
+      try {
+        const taps = await fetchActiveTaps();
+        renderTaps(taps);
+        renderRecentlyTapped();
+        bootRealtime();
+      } catch (e) {
+        console.warn('Supabase fetch failed, falling back to local JSON', e);
+        await loadFromFallback();
+      }
+
+      updatePricingBanner();
     });
   </script>
 
+  <!-- Fallback inline taps (optional dev aid). Delete if you don’t want any local fallback. -->
+  <script id="taps-data" type="application/json">
+  {"lastUpdated":"","taps":[]}
+  </script>
+
   <noscript>
-    <style>
-      #taps-list::after{content:"Enable JavaScript to see live tap updates.";display:block;color:#6B7280;margin-top:.5rem;font-size:.875rem}
-    </style>
+    <style>#taps-list::after{content:"Enable JavaScript to see live tap updates.";display:block;color:#6B7280;margin-top:.5rem;font-size:.875rem}</style>
   </noscript>
 </body>
 </html>
