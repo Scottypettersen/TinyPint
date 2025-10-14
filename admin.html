@@ -1,0 +1,20 @@
+<!doctype html><meta charset="utf-8"><title>Tiny Pint Admin Test</title>
+<style>body{font:16px/1.4 system-ui;margin:2rem;max-width:540px}input,button{font:inherit;padding:.5rem;border:1px solid #ccc;border-radius:.5rem}</style>
+<h1>Admin Pour Test</h1>
+<label>Admin Secret <input id="sec" placeholder="ADMIN_SECRET"></label>
+<br><br>
+<label>Tap ID <input id="tap" size="40" value="685e095e-9e81-4aeb-bb0b-0fcdf80da574"></label>
+<br><br>
+<button id="p10">Pour 10 oz</button>
+<button id="p16">Pour 16 oz</button>
+<pre id="out"></pre>
+<script>
+async function call(size){
+  const sec=document.getElementById('sec').value.trim();
+  const tap=document.getElementById('tap').value.trim();
+  const r=await fetch('/.netlify/functions/pour',{method:'POST',headers:{'Content-Type':'application/json','x-admin-secret':sec},body:JSON.stringify({tapId:tap,sizeOz:size,price:0,source:'manual',note:'admin.html'})});
+  document.getElementById('out').textContent = (r.status+' '+r.statusText+'\n')+await r.text();
+}
+document.getElementById('p10').onclick=()=>call(10);
+document.getElementById('p16').onclick=()=>call(16);
+</script>
