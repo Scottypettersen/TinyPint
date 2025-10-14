@@ -49,7 +49,7 @@
   }
   </script>
 
-  <!-- Minimal inline utilities (kept tiny so no Tailwind rebuild needed) -->
+  <!-- Minimal inline utilities -->
   <style>
     .status-dot{display:inline-block;width:.6rem;height:.6rem;border-radius:9999px}
     .status-fresh{background:#10B981}.status-low{background:#F59E0B}.status-last{background:#EF4444}
@@ -64,16 +64,8 @@
     .plaque{border:1px solid #E7E2DA;border-radius:.5rem;padding:.5rem .6rem;background:#FAF9F6}
   </style>
 
-  <!-- Supabase (read-only anon key goes here) -->
+  <!-- Supabase client (keys come from /.netlify/functions/config at runtime) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script defer>
-    // ⚠️ Replace with your real anon key (public) — do NOT use the service key here.
-    const SUPABASE_URL = "https://rrxcdcdpvdqspmaanlnn.supabase.co";
-    const SUPABASE_ANON = "YOUR_SUPABASE_ANON_KEY";
-    window.addEventListener('DOMContentLoaded', () => {
-      window.sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-    });
-  </script>
 </head>
 
 <body class="bg-pint-paper text-pint-ink font-sans">
@@ -169,7 +161,6 @@
             <img src="/images/tap-handle.jpg" width="760" height="420" loading="lazy" decoding="async" alt="Tiny Pint tap handle" class="rounded-xl w-full h-56 object-cover">
             <div id="ontap-now" class="mt-3">
               <div class="text-sm text-gray-600">On tap now</div>
-              <!-- filled by JS -->
             </div>
 
             <div id="recently-tapped" class="mt-6" aria-live="polite"></div>
@@ -252,7 +243,7 @@
             </div>
             <div class="rounded-xl border border-pint-stone p-4">
               <div class="font-semibold">Why it matters</div>
-              <ul class="mt-2 list-stone">
+              <ul class="list-stone mt-2">
                 <li>~<span id="morePct">60%</span> more pours</li>
                 <li>Fresher kegs, faster rotation</li>
                 <li>Guests can try more styles</li>
@@ -260,9 +251,7 @@
             </div>
           </div>
 
-          <p class="text-xs text-gray-600 mt-4">
-            Notes: Gross ≠ profit. COGS, tax, and tips not included.
-          </p>
+          <p class="text-xs text-gray-600 mt-4">Notes: Gross ≠ profit. COGS, tax, and tips not included.</p>
         </div>
       </div>
     </section>
@@ -276,18 +265,9 @@
         and always feels good to be in.
       </p>
       <ul class="grid gap-3 md:gap-4 md:grid-cols-3">
-        <li class="card">
-          <strong>Big Beer, Small Space</strong><br />
-          <span class="text-gray-600">10 seats, 3 taps, zero chaos.</span>
-        </li>
-        <li class="card">
-          <strong>Smart Margins</strong><br />
-          <span class="text-gray-600">More pours per keg, fresher rotation.</span>
-        </li>
-        <li class="card">
-          <strong>Local Focus</strong><br />
-          <span class="text-gray-600">Regional craft without full-bar overhead.</span>
-        </li>
+        <li class="card"><strong>Big Beer, Small Space</strong><br /><span class="text-gray-600">10 seats, 3 taps, zero chaos.</span></li>
+        <li class="card"><strong>Smart Margins</strong><br /><span class="text-gray-600">More pours per keg, fresher rotation.</span></li>
+        <li class="card"><strong>Local Focus</strong><br /><span class="text-gray-600">Regional craft without full-bar overhead.</span></li>
       </ul>
     </section>
 
@@ -324,12 +304,8 @@
       <div class="max-w-5xl mx-auto px-4 md:px-6 grid gap-6 md:grid-cols-[1fr_360px] items-center">
         <div class="text-center md:text-left">
           <h2 class="text-2xl md:text-3xl font-extrabold mb-2">Founding Fifty — Pint Club</h2>
-          <p class="text-base md:text-lg text-gray-600">
-            $60/year gets you a $5 first Tiny Pint per visit, quarterly member nights, and 10% off merch.
-          </p>
-          <p class="text-sm text-gray-500 mt-3 max-w-lg md:max-w-none mx-auto md:mx-0">
-            The Pint Club isn’t just a loyalty program; it’s how we stay small, nimble, and independent. Your support keeps the taps fresh without compromising the vision.
-          </p>
+          <p class="text-base md:text-lg text-gray-600">$60/year gets you a $5 first Tiny Pint per visit, quarterly member nights, and 10% off merch.</p>
+          <p class="text-sm text-gray-500 mt-3 max-w-lg md:max-w-none mx-auto md:mx-0">The Pint Club isn’t just a loyalty program; it’s how we stay small, nimble, and independent. Your support keeps the taps fresh without compromising the vision.</p>
 
           <div class="mt-6 flex flex-wrap gap-2 justify-center md:justify-start" role="group" aria-label="Choose a waitlist type">
             <button class="pill" data-waitlist="founding">Founding Fifty</button>
@@ -339,8 +315,8 @@
           </div>
 
           <form name="tiny-waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="max-w-md mx-auto md:mx-0 mt-4 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
-            <input type="hidden" name="form-name" value="tiny-waitlist">
-            <input type="hidden" id="waitlist-type" name="type" value="founding">
+            <input type="hidden" name="form-name" value="tiny-waitlist" />
+            <input type="hidden" id="waitlist-type" name="type" value="founding" />
             <p class="hidden"><label>Don’t fill this out: <input name="bot-field" /></label></p>
             <input type="email" name="email" autocomplete="email" placeholder="you@beerfan.com" required class="input" aria-label="Email to join the selected waitlist" />
             <button class="btn btn-primary" type="submit">Join the List</button>
@@ -405,9 +381,7 @@
       <div class="max-w-5xl mx-auto px-4 md:px-6">
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
           <h2 class="text-2xl md:text-3xl font-extrabold">Plans &amp; Press</h2>
-          <p class="text-sm text-gray-600 md:max-w-md">
-            Want the numbers and the story? Grab our one-pager for a quick overview, or the full plan for the deep dive.
-          </p>
+          <p class="text-sm text-gray-600 md:max-w-md">Want the numbers and the story? Grab our one-pager for a quick overview, or the full plan for the deep dive.</p>
         </div>
 
         <div class="grid gap-4 md:grid-cols-2 mt-6">
@@ -428,9 +402,7 @@
           </a>
         </div>
 
-        <p class="mt-6 text-sm text-gray-600">
-          Media or landlords: email <a class="underline" href="mailto:hello@tinypint.beer">hello@tinypint.beer</a> for a press kit.
-        </p>
+        <p class="text-sm text-gray-600 mt-6">Media or landlords: email <a class="underline" href="mailto:hello@tinypint.beer">hello@tinypint.beer</a> for a press kit.</p>
       </div>
     </section>
 
@@ -481,12 +453,34 @@
     // ------- Helpers -------
     const $ = (id) => document.getElementById(id);
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const asMoney = (n) => {
-      const s = Number(n).toFixed(2);
-      return `$${s.endsWith('.00') ? s.slice(0,-3) : s}`;
-    };
+    const asMoney = (n) => { const s = Number(n).toFixed(2); return `$${s.endsWith('.00') ? s.slice(0,-3) : s}`; };
     const fmtABV = (n) => typeof n === 'number' ? `${n.toFixed(1)}% ABV` : '';
     const fmtUpdated = (iso) => { try { return new Date(iso).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }); } catch { return iso || ''; } };
+
+    function toast(msg, ms=2400){
+      const div = document.createElement('div');
+      div.textContent = msg; div.setAttribute('role','status');
+      Object.assign(div.style,{position:'fixed',left:'50%',bottom:'1.25rem',transform:'translateX(-50%)',padding:'.6rem .8rem',background:'#1F2937',color:'#fff',borderRadius:'.5rem',boxShadow:'0 10px 25px rgba(0,0,0,.15)',zIndex:9999});
+      document.body.appendChild(div); setTimeout(()=>div.remove(),ms);
+    }
+
+    // ------- Supabase bootstrap via Netlify function -------
+    async function initSupabaseFromConfig() {
+      try {
+        const res = await fetch('/.netlify/functions/config', { cache: 'no-store' });
+        if (!res.ok) throw new Error('config http ' + res.status);
+        const cfg = await res.json();
+        const url = cfg?.supabase?.url;
+        const anon = cfg?.supabase?.anon;
+        if (!url || !anon) throw new Error('Missing url/anon in /config');
+        window.sb = supabase.createClient(url, anon, { auth: { persistSession: false } });
+        return true;
+      } catch (e) {
+        console.warn('Supabase config failed:', e);
+        toast('Live data offline. Showing last known list.');
+        return false;
+      }
+    }
 
     // ------- Live views (client-side demo) -------
     (function liveViews(){
@@ -506,10 +500,7 @@
     }
 
     // ------- Dynamic pricing (client demo rules) -------
-    const dynamicRules = {
-      happyHour: { days:[1,2,3], start:'15:00', end:'17:00', tiny:3.50 }, // Mon=1..Wed=3
-      lastCallOff: 1.00
-    };
+    const dynamicRules = { happyHour: { days:[1,2,3], start:'15:00', end:'17:00', tiny:3.50 }, lastCallOff: 1.00 };
     function withinWindow(start, end, d=new Date()){
       const [sh,sm] = start.split(':').map(Number), [eh,em] = end.split(':').map(Number);
       const t = d.getHours()*60 + d.getMinutes();
@@ -517,41 +508,50 @@
     }
     function priceFor(tap, basePrice, now=new Date()){
       let label = null, price = basePrice;
-      if (typeof tap.poursRemaining === 'number' && tap.poursRemaining <= 20) {
-        price = Math.max(0, basePrice - dynamicRules.lastCallOff);
-        label = `Last call pricing`;
-      }
+      if (typeof tap.poursRemaining === 'number' && tap.poursRemaining <= 20) { price = Math.max(0, basePrice - dynamicRules.lastCallOff); label = `Last call pricing`; }
       const dow = now.getDay();
       if (dynamicRules.happyHour.days.includes(dow) && withinWindow(dynamicRules.happyHour.start, dynamicRules.happyHour.end, now)) {
-        if (dynamicRules.happyHour.tiny < price) {
-          price = dynamicRules.happyHour.tiny;
-          label = `Happy Hour: ${dynamicRules.happyHour.start}–${dynamicRules.happyHour.end}`;
-        }
+        if (dynamicRules.happyHour.tiny < price) { price = dynamicRules.happyHour.tiny; label = `Happy Hour: ${dynamicRules.happyHour.start}–${dynamicRules.happyHour.end}`; }
       }
       return { price, label };
     }
 
-    // ------- Supabase reads -------
+    // ------- Supabase reads (snake_case -> UI map) -------
     async function fetchActiveTaps() {
       const { data, error } = await sb
         .from('taps')
-        .select('id,name,brewery,style,abv,pours_remaining,keg_size_oz,is_on_tap,tapped_at,updated_at')
+        .select(`
+          id,
+          name,
+          brewery,
+          style,
+          abv,
+          is_on_tap,
+          pours_remaining,
+          keg_size_oz,
+          tapped_at,
+          updated_at
+        `)
         .eq('is_on_tap', true)
         .order('brewery', { ascending: true });
+
       if (error) throw error;
+
       return (data || []).map(r => ({
         id: r.id,
         name: r.name,
         brewery: r.brewery,
         style: r.style,
         abv: Number(r.abv),
-        sizes: { tiny: 10, full: 16 },       // demo constants (can be per-beer later)
+        sizes: { tiny: 10, full: 16 },
         price: { tiny: 5.0, full: 6.5 },
-        poursRemaining: r.pours_remaining,
+        poursRemaining: Number.isFinite(r.pours_remaining) ? r.pours_remaining : 0,
+        kegSizeOz: Number.isFinite(r.keg_size_oz) ? r.keg_size_oz : 1984,
         tappedAt: r.tapped_at,
         status: r.is_on_tap ? 'on' : 'off'
       }));
     }
+
     async function fetchRecentlyKicked(hours=24) {
       const since = new Date(Date.now() - hours*3600*1000).toISOString();
       const { data, error } = await sb
@@ -561,8 +561,15 @@
         .gte('updated_at', since)
         .order('updated_at', { ascending: false })
         .limit(8);
+
       if (error) throw error;
-      return data || [];
+
+      return (data || []).map(r => ({
+        id: r.id,
+        name: r.name,
+        brewery: r.brewery,
+        updatedAt: r.updated_at
+      }));
     }
 
     // ------- Renderers -------
@@ -606,9 +613,11 @@
         const fullDyn = typeof fullBase === 'number' ? priceFor(t, fullBase) : null;
         const scarcity = scarcityBadge(t.poursRemaining ?? 999);
 
-        // Keg ticker width: assume 198 pours full scale
-        const totalPours = 198;
-        const pct = Math.max(0, Math.min(100, Math.round(((t.poursRemaining ?? totalPours) / totalPours)*100)));
+        // Keg ticker width by ounces: poursRemaining * tiny size / keg size
+        const assumedTinyOz = t?.sizes?.tiny ?? 10;
+        const kegOz = t?.kegSizeOz ?? 1984; // ½ bbl default
+        const filledOz = (t.poursRemaining ?? 0) * assumedTinyOz;
+        const pct = Math.max(0, Math.min(100, Math.round((filledOz / kegOz) * 100)));
 
         return `
           <article class="card ${on ? '' : 'opacity-60'}">
@@ -661,7 +670,7 @@
               </div>
             </div>
 
-            <!-- Adoption plaque (placeholder; will read from keg_adoptions later) -->
+            <!-- Adoption plaque (placeholder) -->
             <div class="mt-3 text-sm text-gray-700" data-plaque hidden></div>
           </article>
         `;
@@ -688,7 +697,6 @@
       });
 
       renderOnTapNow(taps);
-      updatePricingBanner();
 
       // Demo: show one plaque nicely
       const firstPlaque = listEl.querySelector('[data-plaque]');
@@ -715,22 +723,16 @@
             ${list.map(k => `
               <div class="rounded-lg border border-pint-stone p-3 bg-white opacity-90">
                 <div class="font-semibold">${k.brewery} — ${k.name}</div>
-                <div class="text-xs text-gray-600">Kicked: ${new Date(k.updated_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} · 198 pours of glory</div>
+                <div class="text-xs text-gray-600">Kicked: ${new Date(k.updatedAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} · 198 pours of glory</div>
               </div>`).join('')}
           </div>
         `;
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) { console.error(e); }
     }
 
     // ------- Fallback loaders -------
-    function getInlineTapsJSON() {
-      try { const el = document.querySelector('#taps-data'); return el ? JSON.parse(el.textContent) : null; } catch { return null; }
-    }
-    async function fetchTapsJSON() {
-      try { const res = await fetch('taps.json', { cache:'no-store' }); if (!res.ok) throw 0; return await res.json(); } catch { return null; }
-    }
+    function getInlineTapsJSON() { try { const el = document.querySelector('#taps-data'); return el ? JSON.parse(el.textContent) : null; } catch { return null; } }
+    async function fetchTapsJSON() { try { const res = await fetch('taps.json', { cache:'no-store' }); if (!res.ok) throw 0; return await res.json(); } catch { return null; } }
     async function loadFromFallback() {
       const updatedEl = $('taps-updated');
       const local = getInlineTapsJSON() || await fetchTapsJSON();
@@ -774,11 +776,7 @@
         box.appendChild(d);
       }
     }
-    function maybeNotifyPerks(){
-      const p = loadPassport();
-      if (p.stamps.length === 5) toast('Perk unlocked: 10% off next visit');
-      if (p.stamps.length === 10) toast('Perk unlocked: Free Tiny Flight');
-    }
+    function maybeNotifyPerks(){ const p = loadPassport(); if (p.stamps.length === 5) toast('Perk unlocked: 10% off next visit'); if (p.stamps.length === 10) toast('Perk unlocked: Free Tiny Flight'); }
 
     // ------- Reserve & Rate (demo UX only) -------
     function reservePour(tap){
@@ -799,13 +797,6 @@
       toast(`Thanks! Current avg: ${(prev.total/prev.count).toFixed(1)}★ (${prev.count})`);
     }
 
-    // ------- Toast & notifications -------
-    function toast(msg){
-      const div = document.createElement('div');
-      div.textContent = msg; div.setAttribute('role','status');
-      Object.assign(div.style,{position:'fixed',left:'50%',bottom:'1.25rem',transform:'translateX(-50%)',padding:'.6rem .8rem',background:'#1F2937',color:'#fff',borderRadius:'.5rem',boxShadow:'0 10px 25px rgba(0,0,0,.15)',zIndex:9999});
-      document.body.appendChild(div); setTimeout(()=>div.remove(),2400);
-    }
     async function maybeNotify(title, options){
       try {
         if (!('Notification' in window)) return;
@@ -888,7 +879,10 @@
       const listWrap = $('taps-list').parentElement;
       listWrap?.setAttribute('aria-busy','true');
 
+      const ok = await initSupabaseFromConfig();
+
       try {
+        if (!ok) throw new Error('supabase bootstrap failed');
         const taps = await fetchActiveTaps();
         renderTaps(taps);
         renderRecentlyTapped();
@@ -902,7 +896,7 @@
     });
   </script>
 
-  <!-- Fallback inline taps (optional dev aid). Delete if you don’t want any local fallback. -->
+  <!-- Fallback inline taps (optional dev aid) -->
   <script id="taps-data" type="application/json">
   {"lastUpdated":"","taps":[]}
   </script>
